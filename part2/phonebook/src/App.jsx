@@ -1,63 +1,85 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
 import Persons from "./components/Persons";
+import phoneService from "./services/phoneService";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [search, setSearch] = useState("");
   const [newContact, setNewContact] = useState({
     name: "",
     number: "",
   });
 
+  //initial fetch contacts data
+  useEffect(() => {
+    phoneService.getContacts().then((res) => setPersons(res));
+  }, []);
+
+  //filter for showing all contact or searched result
   const filteredContact = search
     ? persons.filter((person) =>
         person.name.toLowerCase().includes(search.toLowerCase())
       )
     : persons;
 
-  const handleNewPhone = (event) => {
-    console.log(
-      "event TargetName: ",
-      event.target.name,
-      "targetValue: ",
-      event.target.value
-    );
-    setNewContact({ ...newContact, [event.target.name]: event.target.value });
-  };
-
-  const handleAddPerson = (e) => {
-    e.preventDefault();
-    const newContactInput = {
-      name: newContact.name,
-      number: newContact.number,
-      id: persons.length + 1,
-    };
-    const isTherePreviousName = persons.some(
-      (person) =>
-        person.name === newContactInput.name &&
-        person.number === newContactInput.number
-    );
-
-    if (isTherePreviousName) {
-      alert(`${newContact.name} is already added to phonebook`);
-    } else if (!isTherePreviousName && newContact.name.trim() !== "") {
-      setPersons([...persons, newContactInput]);
-      setNewContact({ name: "", number: "" });
-    }
-  };
-
+  //handle onChange search input
   const handleSearch = (e) => {
     setSearch(e.target.value);
   };
 
-  console.log({ persons });
+  //handle onChange name and phone input
+  const handleNameAndPhoneInput = (event) => {
+    const eventValue = event.target.value;
+    setNewContact({ ...newContact, [event.target.name]: eventValue });
+  };
+
+  const resetInputField = () => {
+    setNewContact({ name: "", number: "" });
+  };
+
+  //create a phone contact and store to server
+  const handleAddPerson = (e) => {
+    e.preventDefault();
+    if (newContact.name.trim() !== "") {
+      const newContactObj = {
+        name: newContact.name.trim(),
+        number: newContact.number.trim(),
+      };
+      const isTherePrevContact = persons.some(
+        (person) => person.name.trim() === newContactObj.name
+      );
+
+      if (isTherePrevContact) {
+        const contactID = persons.find(
+          (person) => person.name.trim() === newContactObj.name
+        ).id;
+        const message = `${newContactObj.name} is already added to phonebook, replace the old number with a new one?`;
+        confirm(message) &&
+          phoneService.updateContact(contactID, newContactObj).then((res) => {
+            setPersons(
+              persons.map((person) => (person.id !== res.id ? person : res))
+            );
+            resetInputField();
+          });
+      } else if (!isTherePrevContact) {
+        phoneService
+          .createContact(newContactObj)
+          .then((res) => setPersons(persons.concat(res)));
+        resetInputField();
+      }
+    }
+  };
+
+  //delete contact
+  const handleDeleteContact = (id) => {
+    const message = `Delete ${persons.find(person => person.id === id).name}?`;
+    confirm(message) &&
+      phoneService
+        .deleteContact(id)
+        .then(() => setPersons(persons.filter((person) => person.id !== id)));
+  };
 
   return (
     <div>
@@ -67,10 +89,13 @@ const App = () => {
       <PersonForm
         newContact={newContact}
         handleAddPerson={handleAddPerson}
-        handleNewPhone={handleNewPhone}
+        handleInputs={handleNameAndPhoneInput}
       />
       <h3>Numbers</h3>
-      <Persons filteredContact={filteredContact} />
+      <Persons
+        filteredContact={filteredContact}
+        onDelete={handleDeleteContact}
+      />
     </div>
   );
 };
