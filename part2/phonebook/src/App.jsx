@@ -3,6 +3,7 @@ import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
 import Persons from "./components/Persons";
 import phoneService from "./services/phoneService";
+import Caption from "./components/Caption";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,6 +11,10 @@ const App = () => {
   const [newContact, setNewContact] = useState({
     name: "",
     number: "",
+  });
+  const [captionMessage, setCaptionMessage] = useState({
+    error: false,
+    text: "",
   });
 
   //initial fetch contacts data
@@ -54,19 +59,54 @@ const App = () => {
       if (isTherePrevContact) {
         const contactID = persons.find(
           (person) => person.name.trim() === newContactObj.name
-        ).id;
+        );
         const message = `${newContactObj.name} is already added to phonebook, replace the old number with a new one?`;
         confirm(message) &&
-          phoneService.updateContact(contactID, newContactObj).then((res) => {
-            setPersons(
-              persons.map((person) => (person.id !== res.id ? person : res))
-            );
-            resetInputField();
-          });
+          phoneService
+            .updateContact(contactID.id, newContactObj)
+            .then((res) => {
+              setPersons(
+                persons.map((person) => (person.id !== res.id ? person : res))
+              );
+              setCaptionMessage({
+                error: false,
+                text: `Added ${newContactObj.name} Successfully!`,
+              });
+              setTimeout(() => {
+                setCaptionMessage({
+                  error: false,
+                  text: "",
+                });
+              }, 1000 * 5);
+              resetInputField();
+            }).catch(() => {
+              setPersons(persons.filter((person) => (person.id !== contactID.id)))
+              setCaptionMessage({
+                error: true,
+                text: `Information of ${contactID.name} has already been removed from server!`,
+              });
+              setTimeout(() => {
+                setCaptionMessage({
+                  error: false,
+                  text: "",
+                });
+              }, 1000 * 5);
+            });
       } else if (!isTherePrevContact) {
         phoneService
           .createContact(newContactObj)
           .then((res) => setPersons(persons.concat(res)));
+        setCaptionMessage({
+          error: false,
+          text: `Added ${newContactObj.name} Successfully!`,
+        });
+        
+        setTimeout(() => {
+          setCaptionMessage({
+            error: false,
+            text: "",
+          });
+        }, 1000 * 5);
         resetInputField();
       }
     }
@@ -74,16 +114,32 @@ const App = () => {
 
   //delete contact
   const handleDeleteContact = (id) => {
-    const message = `Delete ${persons.find(person => person.id === id).name}?`;
+    const contact = persons.find((person) => person.id === id).name;
+    const message = `Delete ${contact}?`;
     confirm(message) &&
       phoneService
         .deleteContact(id)
-        .then(() => setPersons(persons.filter((person) => person.id !== id)));
+        .then(() => setPersons(persons.filter((person) => person.id !== id)))
+        .catch(() => {
+          console.log("first")
+          setCaptionMessage({
+            error: true,
+            text: `Contact ${contact} is already deleted from server!`,
+          });
+          setPersons(persons.filter((person) => (person.id !== id)))
+          setTimeout(() => {
+            setCaptionMessage({
+              error: false,
+              text: "",
+            });
+          }, 1000 * 5);
+        });
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Caption message={captionMessage} />
       <Filter search={search} handleSearch={handleSearch} />
       <h3>add a new</h3>
       <PersonForm
