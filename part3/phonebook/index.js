@@ -2,14 +2,19 @@ const express = require("express");
 const morgan = require("morgan");
 const app = express();
 
-morgan.token('req-body', (req) => req.method !== 'GET' && JSON.stringify(req.body));
-
-
 app.use(express.json());
+app.use(express.static('dist'))
 
-app.use(morgan(`:method :url :status :res[content-length] - :response-time ms :req-body`))
+morgan.token(
+  "req-body",
+  (req) => req.method !== "GET" && JSON.stringify(req.body)
+);
 
-const PORT = 3001;
+app.use(
+  morgan(
+    `:method :url :status :res[content-length] - :response-time ms :req-body`
+  )
+);
 
 const phonebooks = [
   {
@@ -95,17 +100,8 @@ app.delete("/api/persons/:id", (req, res) => {
   } else res.status(404).end();
 });
 
+const PORT = process.env.PORT || 3001;
+
 app.listen(PORT, () => {
   console.log(`Server is Listening on Port ${PORT}`);
 });
-
-// const http = require("http");
-
-// const app = http.createServer((request, response) => {
-//   response.writeHead(200, { "Content-Type": "text/plain" });
-//   response.end("Hello World");
-// });
-
-// const PORT = 3001;
-// app.listen(PORT);
-// console.log(`Server running on port ${PORT}`);
