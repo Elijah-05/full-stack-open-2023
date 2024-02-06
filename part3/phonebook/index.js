@@ -1,11 +1,11 @@
 const express = require("express");
-const cors = require('cors')
+const cors = require("cors");
 const morgan = require("morgan");
 const app = express();
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
-app.use(express.static('dist'))
+app.use(express.static("dist"));
 
 morgan.token(
   "req-body",
@@ -96,8 +96,10 @@ app.get("/api/persons/:id", (req, res) => {
 app.delete("/api/persons/:id", (req, res) => {
   const id = req.params.id;
   const person = phonebooks.find((phones) => phones.id == id);
+  console.log("index of:", phonebooks.indexOf(person));
   if (person) {
-    phonebooks.filter((phone) => phone.id != id);
+    // phonebooks.filter((phone) => phone.id != id);
+    phonebooks.splice(phonebooks.indexOf(person), 1);
     res.status(204).end();
   } else res.status(404).end();
 });
@@ -106,8 +108,8 @@ app.put("/api/persons/:id", (req, res) => {
   const id = req.params.id;
   const person = phonebooks.find((phones) => phones.id == id);
   if (person && req.body.number) {
-    person.name = req.body.name
-    person.number = req.body.number
+    person.name = req.body.name;
+    person.number = req.body.number;
     res.send(person);
   } else {
     res.status(404).end();
