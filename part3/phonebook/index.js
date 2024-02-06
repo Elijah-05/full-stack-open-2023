@@ -1,7 +1,9 @@
 const express = require("express");
+const cors = require('cors')
 const morgan = require("morgan");
 const app = express();
 
+app.use(cors())
 app.use(express.json());
 app.use(express.static('dist'))
 
@@ -106,7 +108,7 @@ app.put("/api/persons/:id", (req, res) => {
   if (person && req.body.number) {
     person.name = req.body.name
     person.number = req.body.number
-    res.status(204).end();
+    res.send(person);
   } else {
     res.status(404).end();
   }
