@@ -84,8 +84,8 @@ app.post("/api/persons", (req, res) => {
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  const id = +req.params.id;
-  const person = phonebooks.find((phones) => phones.id === id);
+  const id = req.params.id;
+  const person = phonebooks.find((phones) => phones.id == id);
   if (person) {
     res.send(person);
   } else res.status(404).end();
