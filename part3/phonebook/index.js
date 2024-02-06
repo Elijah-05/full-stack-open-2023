@@ -92,8 +92,8 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  const id = +req.params.id;
-  const person = phonebooks.find((phones) => phones.id === id);
+  const id = req.params.id;
+  const person = phonebooks.find((phones) => phones.id == id);
   if (person) {
     phonebooks.filter((phone) => phone.id != id);
     res.status(204).end();

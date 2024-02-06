@@ -1,4 +1,4 @@
-GET http://localhost:3001/api/persons/yuqb9uffc2n
+GET http://localhost:3001/api/persons/
 
 ###
 
@@ -9,5 +9,8 @@ content-type: application/json
     "name": "Amajhgkgugdel",
     "number": "5lhf1-1hfkhgd2-51-151"
 }
+
+###
+DELETE  http://localhost:3001/api/persons/lw3xj3zmdk
 
 

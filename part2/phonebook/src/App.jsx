@@ -118,14 +118,13 @@ const App = () => {
   //delete contact
   const handleDeleteContact = (id) => {
     console.log("Deleting Item ID: ", id);
-    const contact = persons.find((person) => person.id === id).name;
+    const contact = persons.find((person) => person.id == id).name;
     const message = `Delete ${contact}?`;
     confirm(message) &&
       phoneService
         .deleteContact(id)
-        .then(() => setPersons(persons.filter((person) => person.id !== id)))
+        .then(() => setPersons(persons.filter((person) => person.id != id)))
         .catch(() => {
-          console.log("first");
           setCaptionMessage({
             error: true,
             text: `Contact ${contact} is already deleted from server!`,
