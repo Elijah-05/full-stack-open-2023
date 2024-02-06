@@ -100,6 +100,18 @@ app.delete("/api/persons/:id", (req, res) => {
   } else res.status(404).end();
 });
 
+app.put("/api/persons/:id", (req, res) => {
+  const id = req.params.id;
+  const person = phonebooks.find((phones) => phones.id == id);
+  if (person && req.body.number) {
+    person.name = req.body.name
+    person.number = req.body.number
+    res.status(204).end();
+  } else {
+    res.status(404).end();
+  }
+});
+
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
