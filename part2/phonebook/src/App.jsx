@@ -79,8 +79,11 @@ const App = () => {
                 });
               }, 1000 * 5);
               resetInputField();
-            }).catch(() => {
-              setPersons(persons.filter((person) => (person.id !== contactID.id)))
+            })
+            .catch(() => {
+              setPersons(
+                persons.filter((person) => person.id !== contactID.id)
+              );
               setCaptionMessage({
                 error: true,
                 text: `Information of ${contactID.name} has already been removed from server!`,
@@ -100,7 +103,7 @@ const App = () => {
           error: false,
           text: `Added ${newContactObj.name} Successfully!`,
         });
-        
+
         setTimeout(() => {
           setCaptionMessage({
             error: false,
@@ -114,6 +117,7 @@ const App = () => {
 
   //delete contact
   const handleDeleteContact = (id) => {
+    console.log("Deleting Item ID: ", id);
     const contact = persons.find((person) => person.id === id).name;
     const message = `Delete ${contact}?`;
     confirm(message) &&
@@ -121,12 +125,12 @@ const App = () => {
         .deleteContact(id)
         .then(() => setPersons(persons.filter((person) => person.id !== id)))
         .catch(() => {
-          console.log("first")
+          console.log("first");
           setCaptionMessage({
             error: true,
             text: `Contact ${contact} is already deleted from server!`,
           });
-          setPersons(persons.filter((person) => (person.id !== id)))
+          setPersons(persons.filter((person) => person.id !== id));
           setTimeout(() => {
             setCaptionMessage({
               error: false,
