@@ -1,9 +1,5 @@
 const mongoose = require("mongoose");
 
-// const password = process.argv[2];
-// const name = process.argv[3];
-// const number = process.argv[4];
-
 const url = process.env.MONGODB_URI;
 
 const connectDatabase = async () => {
@@ -16,8 +12,22 @@ connectDatabase()
   .catch((err) => console.log("Unable to connect to MongoDB!", err));
 
 const PhoneBook = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minLength: 3,
+    required: true,
+  },
+  number: {
+    type: String,
+    minLength: 8,
+    validate: {
+      validator: function(v) {
+        return /^\d{2,3}-\d{8}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number! correct it like 012-11223344`
+    },
+    required: [true, 'User phone number required']
+  },
 });
 
 PhoneBook.set("toJSON", {
@@ -29,24 +39,3 @@ PhoneBook.set("toJSON", {
 });
 
 module.exports = mongoose.model("Phone", PhoneBook);
-
-// const Phones = mongoose.model("Phone", PhoneBook);
-
-// if (name && number) {
-//   const newPhone = new Phones({
-//     name,
-//     number,
-//   });
-
-//   newPhone.save().then((result) => {
-//     console.log(`added ${result.name} number ${result.number} to phonebook`);
-//     mongoose.connection.close();
-//   });
-// } else
-//   Phones.find().then((phone) => {
-//     console.log("phonebook:", phone);
-//     // for (const phon of phone) {
-//     //   console.log(phon.name, phon.number);
-//     // }
-//     mongoose.connection.close();
-//   });
