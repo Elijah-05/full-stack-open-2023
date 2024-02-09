@@ -1,6 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const Phones = require("./models/Phonebook");
 const app = express();
 
 app.use(cors());
@@ -55,66 +57,54 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-  res.json(phonebooks);
+  Phones.find().then((response) => res.send(response));
 });
 
 app.post("/api/persons", (req, res) => {
   const name = req.body?.name;
   const number = req.body?.number;
   const randomID = Math.random().toString(36).slice(2);
-  const isNameExist = phonebooks.some((phone) => phone.name == name);
-  const isNumberExist = phonebooks.some((phone) => phone.number == number);
-  if (name && number && !isNameExist && !isNumberExist) {
-    const newPhone = {
+  // const isNameExist = phonebooks.some((phone) => phone.name == name);
+  // const isNumberExist = phonebooks.some((phone) => phone.number == number);
+  if (name && number) {
+    const newPhone = new Phones({
       id: randomID,
       name,
       number,
-    };
-    phonebooks.push(newPhone);
-    res.send(newPhone);
-  } else if (isNameExist || isNumberExist) {
-    res.status(404).send({
-      error: `an existing phone ${
-        isNameExist && isNumberExist
-          ? "name and number"
-          : isNameExist
-          ? "name"
-          : "number"
-      } try another`,
+    });
+
+    newPhone.save().then((response) => {
+      res.send(response);
     });
   } else res.status(404).end();
 });
 
 app.get("/api/persons/:id", (req, res) => {
   const id = req.params.id;
-  const person = phonebooks.find((phones) => phones.id == id);
-  if (person) {
-    res.send(person);
-  } else res.status(404).end();
+
+  Phones.findById(id)
+    .then((response) => res.send(response))
+    .catch((err) => res.status(404).end());
 });
 
 app.delete("/api/persons/:id", (req, res) => {
   const id = req.params.id;
-  const person = phonebooks.find((phones) => phones.id == id);
-  console.log("index of:", phonebooks.indexOf(person));
-  if (person) {
-    // phonebooks.filter((phone) => phone.id != id);
-    phonebooks.splice(phonebooks.indexOf(person), 1);
-    res.status(204).end();
-  } else res.status(404).end();
+  Phones.findByIdAndDelete(id)
+    .then((response) => res.status(204).end())
+    .catch((err) => res.status(404).end());
 });
 
-app.put("/api/persons/:id", (req, res) => {
-  const id = req.params.id;
-  const person = phonebooks.find((phones) => phones.id == id);
-  if (person && req.body.number) {
-    person.name = req.body.name;
-    person.number = req.body.number;
-    res.send(person);
-  } else {
-    res.status(404).end();
-  }
-});
+// app.put("/api/persons/:id", (req, res) => {
+//   const id = req.params.id;
+//   const person = phonebooks.find((phones) => phones.id == id);
+//   if (person && req.body.number) {
+//     person.name = req.body.name;
+//     person.number = req.body.number;
+//     res.send(person);
+//   } else {
+//     res.status(404).end();
+//   }
+// });
 
 const PORT = process.env.PORT || 3001;
 
