@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const password = process.argv[2];
+// const password = process.argv[2];
 const name = process.argv[3];
 const number = process.argv[4];
 
