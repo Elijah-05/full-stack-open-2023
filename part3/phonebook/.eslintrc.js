@@ -22,9 +22,9 @@ module.exports = {
   },
   rules: {
     indent: ["error", 2],
-    "linebreak-style": ["error", "window"],
+    "linebreak-style": 0,
     quotes: ["error", "double"],
-    semi: ["error", "never"],
+    semi: ["error", "always"],
     eqeqeq: "error",
     "no-trailing-spaces": "error",
     "object-curly-spacing": ["error", "always"],
