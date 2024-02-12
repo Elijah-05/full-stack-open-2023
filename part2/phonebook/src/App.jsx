@@ -47,11 +47,12 @@ const App = () => {
   //create a phone contact and store to server
   const handleAddPerson = (e) => {
     e.preventDefault();
-    if (newContact.name.trim() !== "") {
+  
       const newContactObj = {
         name: newContact.name.trim(),
         number: newContact.number.trim(),
       };
+
       const isTherePrevContact = persons.some(
         (person) => person.name.trim() === newContactObj.name
       );
@@ -80,13 +81,10 @@ const App = () => {
               }, 1000 * 5);
               resetInputField();
             })
-            .catch(() => {
-              setPersons(
-                persons.filter((person) => person.id !== contactID.id)
-              );
+            .catch((err) => {
               setCaptionMessage({
                 error: true,
-                text: `Information of ${contactID.name} has already been removed from server!`,
+                text: err.response.data.error,
               });
               setTimeout(() => {
                 setCaptionMessage({
@@ -95,24 +93,39 @@ const App = () => {
                 });
               }, 1000 * 5);
             });
-      } else if (!isTherePrevContact) {
+      } else {
         phoneService
           .createContact(newContactObj)
-          .then((res) => setPersons(persons.concat(res)));
-        setCaptionMessage({
-          error: false,
-          text: `Added ${newContactObj.name} Successfully!`,
-        });
+          .then((res) => {
+            setPersons(persons.concat(res));
+            setCaptionMessage({
+              error: false,
+              text: `Added ${newContactObj.name} Successfully!`,
+            });
 
-        setTimeout(() => {
-          setCaptionMessage({
-            error: false,
-            text: "",
+            setTimeout(() => {
+              setCaptionMessage({
+                error: false,
+                text: "",
+              });
+            }, 1000 * 5);
+            resetInputField();
+          })
+          .catch((err) => {
+            setCaptionMessage({
+              error: true,
+              text: err.response.data.error,
+            });
+
+            setTimeout(() => {
+              setCaptionMessage({
+                error: false,
+                text: "",
+              });
+            }, 1000 * 5);
           });
-        }, 1000 * 5);
-        resetInputField();
       }
-    }
+    
   };
 
   //delete contact
