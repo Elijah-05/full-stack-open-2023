@@ -90,7 +90,7 @@ describe("Favorite Blog", () => {
       author: "Edsger W. Dijkstra",
       likes: 5,
     };
-    assert.deepEqual(result, favoriteOfSingleBlog);
+    assert.deepStrictEqual(result, favoriteOfSingleBlog);
   });
 
   test("when blog list has more than one blog, the response of favorite blog", () => {
@@ -100,13 +100,13 @@ describe("Favorite Blog", () => {
       author: "Edsger W. Dijkstra",
       likes: 12,
     };
-    assert.deepEqual(result, favoriteOfSingleBlog);
+    assert.deepStrictEqual(result, favoriteOfSingleBlog);
   });
 });
 
 describe("Most Blog Author", () => {
   test("when blog list is empty array", () => {
-    assert.deepEqual(listHelper.mostBlogs([]), 0);
+    assert.deepStrictEqual(listHelper.mostBlogs([]), 0);
   });
 
   test("when blog list has one blog", () => {
@@ -114,7 +114,10 @@ describe("Most Blog Author", () => {
       author: "Edsger W. Dijkstra",
       blogs: 1,
     };
-    assert.deepEqual(listHelper.mostBlogs(listWithOneBlog), expectedResult);
+    assert.deepStrictEqual(
+      listHelper.mostBlogs(listWithOneBlog),
+      expectedResult
+    );
   });
 
   test("when blog list has more blogs", () => {
@@ -122,7 +125,7 @@ describe("Most Blog Author", () => {
       author: "Robert C. Martin",
       blogs: 3,
     };
-    assert.deepEqual(listHelper.mostBlogs(blogs), expectedResult);
+    assert.deepStrictEqual(listHelper.mostBlogs(blogs), expectedResult);
   });
 });
 
@@ -133,13 +136,16 @@ describe("Most like Author", () => {
 
   test("when the blog has only one list", () => {
     const expectedResult = { author: "Edsger W. Dijkstra", likes: 5 };
-    
-    assert.deepEqual(listHelper.mostLikes(listWithOneBlog), expectedResult);
+
+    assert.deepStrictEqual(
+      listHelper.mostLikes(listWithOneBlog),
+      expectedResult
+    );
   });
 
   test("when the blog has more blog lists", () => {
     const expectedResult = { author: "Edsger W. Dijkstra", likes: 17 };
 
-    assert.deepEqual(listHelper.mostLikes(blogs), expectedResult);
+    assert.deepStrictEqual(listHelper.mostLikes(blogs), expectedResult);
   });
 });
