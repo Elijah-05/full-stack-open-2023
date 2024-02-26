@@ -12,3 +12,16 @@ Content-Type: application/json
     "url": "https://learn-react-fromzero.com/blogs/express",
     "likes": 91862
 }
+
+### create user
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "Sami1",
+    "name": "Samuel Teklay",
+    "password": "GemeTK@123"
+}
+
+### get users
+GET http://localhost:3003/api/users

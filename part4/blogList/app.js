@@ -9,6 +9,7 @@ const {
   unknownEndpoint,
   errorHandler,
 } = require("./utils/middlewares");
+const userRoutes = require("./controllers/userRoutes");
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use(morganRequstLogger());
 
 app.use("/api/blogs", blogRouter);
+app.use("/api/users", userRoutes);
 
 app.use(unknownEndpoint);
 app.use(errorHandler);
