@@ -1,5 +1,5 @@
 const { test, beforeEach, after, describe } = require("node:test");
-const asser = require("node:assert");
+const assert = require("node:assert");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
@@ -43,7 +43,7 @@ describe("When blog lists are initially seted and Start tesd for each", () => {
 
     test("Check if the returned data of unique identifier is modified", async () => {
       const result = await api.get("/api/blogs");
-      asser.deepStrictEqual(typeof result.body[0].id, "string");
+      assert.deepStrictEqual(typeof result.body[0].id, "string");
     });
   });
 
@@ -64,7 +64,7 @@ describe("When blog lists are initially seted and Start tesd for each", () => {
       const blogsData = await Blog.find({});
       // console.log("blogData ", blogsData);
 
-      asser.strictEqual(blogsData.length, initialBlogs.length + 1);
+      assert.strictEqual(blogsData.length, initialBlogs.length + 1);
     });
 
     test("test if like property is missed in post request, set it to zero", async () => {
@@ -81,7 +81,7 @@ describe("When blog lists are initially seted and Start tesd for each", () => {
         .expect("Content-Type", /application\/json/);
 
       // console.log("response of missing like: ", response.body);
-      asser.strictEqual(response.body.likes, 0);
+      assert.strictEqual(response.body.likes, 0);
     });
 
     test("Title missing blog post, expected to 400 response", async () => {
@@ -101,7 +101,7 @@ describe("When blog lists are initially seted and Start tesd for each", () => {
 
       const blogListAfterDeletion = await Blog.find({});
 
-      asser.strictEqual(
+      assert.strictEqual(
         blogListBeforeDeletion.length,
         blogListAfterDeletion.length + 1
       );

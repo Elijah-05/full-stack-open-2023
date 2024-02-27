@@ -8,8 +8,10 @@ const {
   morganRequstLogger,
   unknownEndpoint,
   errorHandler,
+  tokenExtractor,
 } = require("./utils/middlewares");
 const userRoutes = require("./controllers/userRoutes");
+const loginRoute = require("./controllers/loginRoute");
 
 const app = express();
 
@@ -26,6 +28,9 @@ app.use(express.static("dist"));
 app.use(express.json());
 app.use(morganRequstLogger());
 
+app.use(tokenExtractor);
+
+app.use("/api/login", loginRoute);
 app.use("/api/blogs", blogRouter);
 app.use("/api/users", userRoutes);
 

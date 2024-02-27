@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     minLength: 3,
   },
-  notes: [
+  blogs: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Blog",
@@ -26,7 +26,6 @@ userSchema.set("toJSON", {
     delete returnedObject._id;
     delete returnedObject.__v;
     delete returnedObject.passwordHash;
-    delete returnedObject.notes;
   },
 });
 

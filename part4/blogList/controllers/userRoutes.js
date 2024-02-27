@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const userRoutes = require("express").Router();
 const User = require("../models/usersModel");
+const Blog = require("../models/blogsModel");
 
 userRoutes.post("/", async (req, res, next) => {
   const { username, name, password } = req.body;
@@ -31,7 +32,7 @@ userRoutes.post("/", async (req, res, next) => {
 });
 
 userRoutes.get("/", async (req, res, next) => {
-  const response = await User.find({});
+  const response = await User.find({}).populate("blogs", { user: 0 });
   res.send(response);
 });
 
