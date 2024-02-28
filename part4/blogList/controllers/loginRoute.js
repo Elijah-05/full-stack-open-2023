@@ -7,15 +7,18 @@ loginRoute.post("/", async (req, res, next) => {
   const { username, password } = req.body;
 
   const user = await User.findOne({ username });
-  const isPasswordMatched = await bcrypt.compare(password, user.passwordHash);
+  const isPasswordMatched = user
+    ? bcrypt.compare(password, user?.passwordHash)
+    : false;
 
   if (!(user && isPasswordMatched)) {
-    return res.status(401).json({
-      error: "invalid username or password",
-    });
+    return res
+      .status(401)
+      .send({
+        error: "invalid username or password",
+      })
+      .end();
   }
-
-  console.log("Is Password Matched: ", isPasswordMatched);
 
   const tokenData = {
     username: user.username,

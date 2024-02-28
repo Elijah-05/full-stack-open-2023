@@ -9,6 +9,7 @@ const {
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
+  userExtractor,
 } = require("./utils/middlewares");
 const userRoutes = require("./controllers/userRoutes");
 const loginRoute = require("./controllers/loginRoute");

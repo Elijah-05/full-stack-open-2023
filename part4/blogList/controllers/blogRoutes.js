@@ -2,6 +2,7 @@ const blogRouter = require("express").Router();
 const jwt = require("jsonwebtoken");
 const User = require("../models/usersModel");
 const Blog = require("./../models/blogsModel");
+const { userExtractor } = require("../utils/middlewares");
 
 blogRouter.get("/", async (req, res) => {
   const result = await Blog.find({}).populate("user", {
@@ -12,23 +13,26 @@ blogRouter.get("/", async (req, res) => {
   res.send(result);
 });
 
-blogRouter.post("/", async (req, res, next) => {
+blogRouter.post("/", userExtractor, async (req, res, next) => {
   const { title, author, url, likes } = req.body;
+  const passedUser = req.user;
   try {
-    const decodedToken = jwt.verify(req.token, process.env.TOKEN_SECRET);
-    if (decodedToken.id) {
-      const user = await User.findById(decodedToken.id);
+    if (!req.token) {
+      res.status(401).send({ error: "Unauthorized user!" });
+    } else if (!title || !author || !url)
+      res.status(400).send({ error: "blog properties are missed!" });
+    else {
       const newBlog = new Blog({
         title,
         author,
         url,
         likes: likes || 0,
-        user: decodedToken.id,
+        user: passedUser?.id,
       });
 
       const response = await newBlog.save();
-      user.blogs = user.blogs.concat(response.id);
-      await user.save();
+      passedUser.blogs = passedUser?.blogs.concat(response.id);
+      await passedUser.save();
       res.status(201).send(response);
     }
   } catch (err) {
@@ -37,16 +41,33 @@ blogRouter.post("/", async (req, res, next) => {
   }
 });
 
-blogRouter.delete("/:id", async (req, res, next) => {
-  await Blog.findByIdAndDelete(req.params.id);
-  res.status(204).end();
+blogRouter.delete("/:id", userExtractor, async (req, res, next) => {
+  try {
+    const user = req.user;
+    const blog = await Blog.findById(req.params.id);
+
+    const isOwner = blog.user.toString() === user.id;
+    console.log("isOwner: ", isOwner);
+    if (isOwner) {
+      await Blog.findByIdAndDelete(req.params.id);
+      res.status(204).end();
+    } else res.status(400).send({ message: "blog creater is different" });
+  } catch (err) {
+    next(err);
+  }
 });
 
-blogRouter.put("/:id", async (req, res, next) => {
+blogRouter.put("/:id", userExtractor, async (req, res, next) => {
   const findBlog = await Blog.findById(req.params.id);
+
   if (findBlog) {
-    await Blog.findByIdAndUpdate(req.params.id, req.body);
-    res.status(201).end();
+    const isOwner = findBlog.user.toString() === req.user.id;
+    if (!req.token || !isOwner) {
+      res.status(401).send({ error: "Unauthorized user! or Invalid token" });
+    } else {
+      await Blog.findByIdAndUpdate(req.params.id, req.body);
+      res.status(201).end();
+    }
   } else res.status(204).end();
 });
 

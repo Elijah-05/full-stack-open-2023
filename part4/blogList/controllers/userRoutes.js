@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const userRoutes = require("express").Router();
 const User = require("../models/usersModel");
-const Blog = require("../models/blogsModel");
 
 userRoutes.post("/", async (req, res, next) => {
   const { username, name, password } = req.body;
@@ -25,7 +24,7 @@ userRoutes.post("/", async (req, res, next) => {
         password,
       };
       res.status(201).send(modifiedResponse);
-    }
+    } else res.status(400).send({ error: "check credential lengths" });
   } catch (err) {
     next(err);
   }

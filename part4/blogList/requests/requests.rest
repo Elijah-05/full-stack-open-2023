@@ -1,17 +1,17 @@
 ### get posts
 GET http://localhost:3003/api/blogs
 
-### create post
 
+### create post
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkF2YTkiLCJpZCI6IjY1ZGQwMmUzNDA2ZDU0OTdiYTE5ZWQyNyIsImlhdCI6MTcwOTAzOTEwMn0.H34Y7DUs0Pk7hDRaj9jMAbxcaJpCG3jhjOj6MuIPI4E
+Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkVMaU5ldyIsImlkIjoiNjVkZTMyZWYxZDE5NWFlOTI3NjczNzc4IiwiaWF0IjoxNzA5MDYwODk1fQ.lRR-PBlBqj_qCNgt4pdxRVqmY5oM_0ITAqEPQzerhgs"
 
 {
-    "title": "Mastering React Query",
-    "author": "Samuel Kidane",
-    "url": "https://learn-react-fromzero.com/blogs/React_Query",
-    "likes": 57,
+    "title": "Learn basic Node.js",
+    "author": "Elijah",
+    "url": "https://learn-react-fromzero.com/blogs/node_js_basic",
+    "likes": 9571,
 }
 
 ### create user
@@ -19,18 +19,18 @@ POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-    "username": "Ava9",
-    "name": "Ahmed Mohammad",
-    "password": "Ahmo19@ava"
+    "username": "newUser1",
+    "name": "Sample User",
+    "password": "newUser123"
 }
 
 ### get users
 GET http://localhost:3003/api/users
 
 
-
 ### Delete Blog by ID
-DELETE http://localhost:3003/api/blogs/65dcf2bf25eab14bf7cd0c3b
+DELETE http://localhost:3003/api/blogs/65ddeb19fb7ebfed9f91d23a
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkF2YTkiLCJpZCI6IjY1ZGQwMmUzNDA2ZDU0OTdiYTE5ZWQyNyIsImlhdCI6MTcwOTAzOTEwMn0.H34Y7DUs0Pk7hDRaj9jMAbxcaJpCG3jhjOj6MuIPI4E
 
 
 ### User Login
@@ -38,6 +38,6 @@ POST http://localhost:3003/api/login
 Content-Type: application/json
 
 {
-    "username": "Ava9",
-    "password": "Ahmo19@ava"
+    "username": "sampleuser",
+    "password": "1234"
 }
