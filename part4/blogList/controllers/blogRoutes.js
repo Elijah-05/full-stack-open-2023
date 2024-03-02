@@ -1,6 +1,4 @@
 const blogRouter = require("express").Router();
-const jwt = require("jsonwebtoken");
-const User = require("../models/usersModel");
 const Blog = require("./../models/blogsModel");
 const { userExtractor } = require("../utils/middlewares");
 
@@ -46,8 +44,8 @@ blogRouter.delete("/:id", userExtractor, async (req, res, next) => {
     const user = req.user;
     const blog = await Blog.findById(req.params.id);
 
-    const isOwner = blog.user.toString() === user.id;
-    console.log("isOwner: ", isOwner);
+    const isOwner = blog?.user.toString() === user.id;
+    console.log("isOwner: ", isOwner, blog?.user.toString(), user.id);
     if (isOwner) {
       await Blog.findByIdAndDelete(req.params.id);
       res.status(204).end();
@@ -59,14 +57,16 @@ blogRouter.delete("/:id", userExtractor, async (req, res, next) => {
 
 blogRouter.put("/:id", userExtractor, async (req, res, next) => {
   const findBlog = await Blog.findById(req.params.id);
-
   if (findBlog) {
-    const isOwner = findBlog.user.toString() === req.user.id;
-    if (!req.token || !isOwner) {
+    if (!req.token) {
       res.status(401).send({ error: "Unauthorized user! or Invalid token" });
     } else {
-      await Blog.findByIdAndUpdate(req.params.id, req.body);
-      res.status(201).end();
+      const response = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+        context: "query",
+      });
+      res.status(201).send(response);
     }
   } else res.status(204).end();
 });

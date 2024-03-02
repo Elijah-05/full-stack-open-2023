@@ -1,5 +1,5 @@
 const Caption = ({ message }) => {
-  if (message?.text.trim()) {
+  if (message?.text?.trim()) {
     return (
       <div
         style={{

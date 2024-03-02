@@ -8,16 +8,13 @@ loginRoute.post("/", async (req, res, next) => {
 
   const user = await User.findOne({ username });
   const isPasswordMatched = user
-    ? bcrypt.compare(password, user?.passwordHash)
+    ? await bcrypt.compare(password, user?.passwordHash)
     : false;
 
   if (!(user && isPasswordMatched)) {
-    return res
-      .status(401)
-      .send({
-        error: "invalid username or password",
-      })
-      .end();
+    return res.status(401).send({
+      error: "invalid username or password",
+    });
   }
 
   const tokenData = {
@@ -25,7 +22,9 @@ loginRoute.post("/", async (req, res, next) => {
     id: user.id,
   };
 
-  const token = jwt.sign(tokenData, process.env.TOKEN_SECRET);
+  const expiry = { expiresIn: 60 * 30 };
+
+  const token = jwt.sign(tokenData, process.env.TOKEN_SECRET, expiry);
   res.send({ username: user.username, name: user.name, token });
 });
 
