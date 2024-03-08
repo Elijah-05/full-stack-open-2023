@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const LoginForm = ({ handleLogin }) => {
   const [credentials, setCredential] = useState({ username: "", password: "" });

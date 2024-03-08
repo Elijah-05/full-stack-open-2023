@@ -1,8 +1,7 @@
+import PropTypes from "prop-types";
 import { useState } from "react";
-import blogService from "../services/blogService";
 
-const Blog = ({ blog, user, handleDeleteBlog }) => {
-  const [blogData, setBlogData] = useState(blog);
+const Blog = ({ blog, user, handleDeleteBlog, handleLike }) => {
   const [showDetail, setShowDetail] = useState(false);
 
   const isOwner = user.username === blog.user.username;
@@ -11,36 +10,21 @@ const Blog = ({ blog, user, handleDeleteBlog }) => {
     setShowDetail(!showDetail);
   };
 
-  const handleLike = async () => {
-    console.log("blogData: ", user?.id);
-    const updatedBlog = {
-      ...blogData,
-      likes: blogData.likes + 1,
-      user: blogData.user.id,
-    };
-    // console.log("updatedBlog: ", updatedBlog);
-    try {
-      const response = await blogService.updateBlog(updatedBlog);
-      setBlogData({ ...blogData, likes: response.likes });
-    } catch (error) {
-      console.log(error.response.data.error);
-    }
-  };
-
   return (
     <div style={{ border: "2px solid black", padding: "4px", margin: "4px" }}>
       <div>
-        {blogData?.title} {blogData?.author}
+        <span className="blog-title">{blog?.title}</span>{" "}
+        <span className="blog-author">{blog?.author}</span>
         <button onClick={toggleShowDetail}>
           {showDetail ? "hide" : "view"}
         </button>
       </div>
       {showDetail && (
         <div>
-          <p>{blogData.url}</p>
-          <span>likes {blogData.likes} </span>
-          <button onClick={handleLike}>like</button>
-          <p>{blogData.user.username}</p>
+          <p id="blog-url">{blog.url}</p>
+          <span>likes {blog.likes} </span>
+          <button onClick={() => handleLike(blog.id)}>like</button>
+          <p>{blog.author}</p>
           <button
             onClick={() => handleDeleteBlog(blog.id)}
             style={{
@@ -58,6 +42,14 @@ const Blog = ({ blog, user, handleDeleteBlog }) => {
       )}
     </div>
   );
+};
+
+Blog.displayName = "Blog";
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  handleDeleteBlog: PropTypes.func.isRequired,
+  handleLike: PropTypes.func.isRequired,
 };
 
 export default Blog;

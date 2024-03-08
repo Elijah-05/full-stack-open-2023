@@ -1,4 +1,5 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
+import PropTypes from "prop-types";
 
 const CreateBlog = forwardRef(({ handleSubmitBlog }, ref) => {
   const [blogContent, setBlogContent] = useState({
@@ -21,6 +22,11 @@ const CreateBlog = forwardRef(({ handleSubmitBlog }, ref) => {
     };
   });
 
+  const submitForm = (e) => {
+    e.preventDefault();
+    handleSubmitBlog(blogContent);
+  };
+
   const handleOnChangeBlogContent = (e) => {
     const key = e.target.name;
     const value = e.target.value;
@@ -28,7 +34,7 @@ const CreateBlog = forwardRef(({ handleSubmitBlog }, ref) => {
   };
 
   return (
-    <form onSubmit={(e) => handleSubmitBlog(e, blogContent)}>
+    <form onSubmit={submitForm}>
       <h2>create new blog</h2>
       <div>
         title
@@ -61,5 +67,10 @@ const CreateBlog = forwardRef(({ handleSubmitBlog }, ref) => {
     </form>
   );
 });
+
+CreateBlog.displayName = "CreateBlog";
+CreateBlog.propTypes = {
+  handleSubmitBlog: PropTypes.func.isRequired,
+};
 
 export default CreateBlog;

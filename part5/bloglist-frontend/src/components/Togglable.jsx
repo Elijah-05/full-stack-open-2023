@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useImperativeHandle } from "react";
+import { forwardRef, useState, useImperativeHandle } from "react";
 
 const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
   const [showContent, setShowContent] = useState(false);
@@ -28,5 +28,7 @@ const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
     </div>
   );
 });
+
+Togglable.displayName = "Togglable";
 
 export default Togglable;

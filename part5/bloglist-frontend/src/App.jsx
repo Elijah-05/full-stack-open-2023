@@ -14,8 +14,6 @@ const App = () => {
   const createRef = useRef(null);
   const clearFieldRef = useRef(null);
 
-  console.log("user: ", blogs);
-
   useEffect(() => {
     async function fetchData() {
       const blogs = await blogService.getAllBlogs();
@@ -32,7 +30,7 @@ const App = () => {
     }
   }, []);
 
-  // console.log("blogs: ", blogs);
+  console.log("blogs: ", blogs);
 
   const handleLogin = async (credentials) => {
     handleClearCaption();
@@ -51,8 +49,7 @@ const App = () => {
     setUser(null);
   };
 
-  const handleSubmitBlog = async (e, blogContent) => {
-    e.preventDefault();
+  const handleSubmitBlog = async (blogContent) => {
     try {
       const response = await blogService.createBlog(blogContent);
       console.log("response", response);
@@ -85,6 +82,26 @@ const App = () => {
     }
   };
 
+  const handleLikeBlog = async (id) => {
+    const targetedBlog = blogs.find((blog) => blog.id === id);
+    const updatedBlog = {
+      ...targetedBlog,
+      likes: targetedBlog.likes + 1,
+      user: targetedBlog.user.id,
+    };
+    try {
+      const response = await blogService.updateBlog(updatedBlog);
+      console.log("like response: ", response);
+      setBlogs(
+        blogs.map((blog) =>
+          blog.id === id ? { ...blog, likes: response.likes } : blog
+        )
+      );
+    } catch (error) {
+      console.log(error.response.data.error);
+    }
+  };
+
   const handleClearCaption = () => {
     setTimeout(() => setCaption(null), 4000);
   };
@@ -114,6 +131,7 @@ const App = () => {
                 blog={blog}
                 user={user}
                 handleDeleteBlog={handleDeleteBlog}
+                handleLike={handleLikeBlog}
               />
             ))}
         </div>
