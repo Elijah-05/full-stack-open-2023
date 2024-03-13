@@ -6,6 +6,7 @@ const parsedUser = JSON.parse(user);
 let token = `Bearer ${parsedUser?.token}`;
 
 const setToken = (tok) => {
+  console.log("setToken Called: with Tok: ", tok);
   token = `Bearer ${tok}`;
 };
 
@@ -27,6 +28,7 @@ const updateBlog = async (data) => {
   const config = {
     headers: { Authorization: token },
   };
+  console.log("token in service updateBlog: ", token);
   const response = await axios.put(baseUrl + id, data, config);
   return response.data;
 };

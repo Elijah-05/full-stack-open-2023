@@ -37,13 +37,16 @@ const App = () => {
     try {
       const user = await loginService.login(credentials);
       localStorage.setItem("user", JSON.stringify(user));
+      console.log("user:##", user);
       setUser(user);
+      blogService.setToken(user.token);
     } catch (error) {
       setCaption({ text: `${error.response.data.error}`, error: true });
     } finally {
       handleClearCaption();
     }
   };
+
   const handleLogOut = () => {
     localStorage.removeItem("user");
     setUser(null);
