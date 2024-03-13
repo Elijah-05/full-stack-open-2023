@@ -90,7 +90,7 @@ const App = () => {
     const updatedBlog = {
       ...targetedBlog,
       likes: targetedBlog.likes + 1,
-      user: targetedBlog.user.id,
+      user: targetedBlog.user?.id,
     };
     try {
       const response = await blogService.updateBlog(updatedBlog);

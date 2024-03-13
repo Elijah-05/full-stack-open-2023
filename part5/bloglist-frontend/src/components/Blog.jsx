@@ -4,7 +4,7 @@ import { useState } from "react";
 const Blog = ({ blog, user, handleDeleteBlog, handleLike }) => {
   const [showDetail, setShowDetail] = useState(false);
 
-  const isOwner = user.username === blog.user.username;
+  const isOwner = user?.username === blog.user?.username;
 
   const toggleShowDetail = () => {
     setShowDetail(!showDetail);
@@ -21,12 +21,12 @@ const Blog = ({ blog, user, handleDeleteBlog, handleLike }) => {
       </div>
       {showDetail && (
         <div>
-          <p id="blog-url">{blog.url}</p>
-          <span>likes {blog.likes} </span>
-          <button onClick={() => handleLike(blog.id)}>like</button>
+          <p id="blog-url">{blog?.url}</p>
+          <span>likes {blog?.likes} </span>
+          <button onClick={() => handleLike(blog?.id)}>like</button>
           <p>{blog.author}</p>
           <button
-            onClick={() => handleDeleteBlog(blog.id)}
+            onClick={() => handleDeleteBlog(blog?.id)}
             style={{
               display: isOwner ? "" : "none",
               backgroundColor: "red",
