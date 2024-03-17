@@ -43,7 +43,6 @@ describe("Blog List app", () => {
     });
 
     test("a new blog can be created", async ({ page }) => {
-      await page.getByRole("button", { name: "Create new blog" }).click();
       const newBlog = {
         title: "testing with playright",
         author: "playright tester",
@@ -87,7 +86,7 @@ describe("Blog List app", () => {
         },
         data: {
           title: "new blog updated with playright",
-          author: "playright",
+          author: "mluukkai salainen",
           url: "example.com/blogs/testing/playright",
         },
       });
@@ -100,6 +99,79 @@ describe("Blog List app", () => {
       await expect(
         page.getByText("new blog updated with playright")
       ).toBeVisible();
+    });
+  });
+
+  describe("Deleting the Blog", () => {
+    beforeEach(async ({ page, request }) => {
+      await loginWith(page, userName, password);
+      await createBlog(page, {
+        title: "created to be deleted",
+        author: "elijah abebe",
+        url: "example.com/blog",
+      });
+    });
+
+    test("user can delete his own blog", async ({ page }) => {
+      await page.getByRole("button", { name: "view" }).click();
+      await expect(page.getByRole("button", { name: "remove" })).toBeVisible();
+
+      await page.getByRole("button", { name: "remove" }).click();
+      await expect(page.getByText("created to be deleted")).not.toBeVisible();
+    });
+
+    test("another user can't see the delete button", async ({
+      page,
+      request,
+    }) => {
+      await request.post("/api/users", {
+        data: {
+          name: "elyas abebe",
+          username: "ellayAb",
+          password: "myPass",
+        },
+      });
+      await page.getByRole("button", { name: "Log out" }).click();
+      await loginWith(page, "ellayAb", "myPass");
+
+      // await expect(page.getByText("created to be deleted")).toBeVisible();
+      await page.getByRole("button", { name: "view" }).click();
+      await expect(
+        page.getByRole("button", { name: "remove" })
+      ).not.toBeVisible();
+    });
+  });
+
+  describe("Blogs list order", () => {
+    test.only("blogs are listed by amount of likes in order", async ({
+      page,
+    }) => {
+      await loginWith(page, userName, password);
+      await createBlog(page, {
+        title: "First blog Test A",
+        author: "elijah abebe",
+        url: "example.com/blog",
+      });
+      await page.getByRole("button", { name: "view" }).click();
+      await page.getByRole("button", { name: "like" }).click();
+
+      await createBlog(page, {
+        title: "Second blog Test B",
+        author: "elijah abebe",
+        url: "example.com/blog",
+      });
+      await page.getByRole("button", { name: "view" }).click();
+
+      await createBlog(page, {
+        title: "Third blog Test C",
+        author: "elijah abebe",
+        url: "example.com/blog",
+      });
+      await page.getByRole("button", { name: "view" }).click();
+
+      const likes = await page.getByTestId("like-amount").allInnerTexts();
+      console.log("like Array:", likes);
+      await page.pause();
     });
   });
 });

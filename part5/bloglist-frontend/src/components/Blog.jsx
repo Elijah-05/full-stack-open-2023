@@ -11,18 +11,23 @@ const Blog = ({ blog, user, handleDeleteBlog, handleLike }) => {
   };
 
   return (
-    <div style={{ border: "2px solid black", padding: "4px", margin: "4px" }}>
+    <div
+      data-testid="blogdiv"
+      style={{ border: "2px solid black", padding: "4px", margin: "4px" }}
+    >
       <div>
-        <span className="blog-title">{blog?.title}</span>{" "}
+        <span data-testid="blogtitle" className="blog-title">
+          {blog?.title}
+        </span>{" "}
         <span className="blog-author">{blog?.author}</span>
-        <button onClick={toggleShowDetail}>
+        <button data-testid="viewbtn" onClick={toggleShowDetail}>
           {showDetail ? "hide" : "view"}
         </button>
       </div>
       {showDetail && (
         <div>
           <p id="blog-url">{blog?.url}</p>
-          <span>likes {blog?.likes} </span>
+          <span data-testid="like">likes {blog?.likes} </span>
           <button onClick={() => handleLike(blog?.id)}>like</button>
           <p>{blog.author}</p>
           <button
