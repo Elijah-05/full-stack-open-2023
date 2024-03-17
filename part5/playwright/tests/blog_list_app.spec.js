@@ -143,9 +143,7 @@ describe("Blog List app", () => {
   });
 
   describe("Blogs list order", () => {
-    test.only("blogs are listed by amount of likes in order", async ({
-      page,
-    }) => {
+    test("blogs are listed by amount of likes in order", async ({ page }) => {
       await loginWith(page, userName, password);
       await createBlog(page, {
         title: "First blog Test A",
