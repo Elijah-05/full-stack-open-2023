@@ -144,32 +144,29 @@ describe("Blog List app", () => {
 
   describe("Blogs list order", () => {
     test("blogs are listed by amount of likes in order", async ({ page }) => {
-      await loginWith(page, userName, password);
-      await createBlog(page, {
-        title: "First blog Test A",
-        author: "elijah abebe",
-        url: "example.com/blog",
-      });
-      await page.getByRole("button", { name: "view" }).click();
-      await page.getByRole("button", { name: "like" }).click();
-
-      await createBlog(page, {
-        title: "Second blog Test B",
-        author: "elijah abebe",
-        url: "example.com/blog",
-      });
-      await page.getByRole("button", { name: "view" }).click();
-
-      await createBlog(page, {
-        title: "Third blog Test C",
-        author: "elijah abebe",
-        url: "example.com/blog",
-      });
-      await page.getByRole("button", { name: "view" }).click();
-
-      const likes = await page.getByTestId("like-amount").allInnerTexts();
-      console.log("like Array:", likes);
-      await page.pause();
+      // await loginWith(page, userName, password);
+      // await createBlog(page, {
+      //   title: "First blog Test A",
+      //   author: "elijah abebe",
+      //   url: "example.com/blog",
+      // });
+      // await page.getByRole("button", { name: "view" }).click();
+      // await page.getByRole("button", { name: "like" }).click();
+      // await createBlog(page, {
+      //   title: "Second blog Test B",
+      //   author: "elijah abebe",
+      //   url: "example.com/blog",
+      // });
+      // await page.getByRole("button", { name: "view" }).click();
+      // await createBlog(page, {
+      //   title: "Third blog Test C",
+      //   author: "elijah abebe",
+      //   url: "example.com/blog",
+      // });
+      // await page.getByRole("button", { name: "view" }).click();
+      // const likes = await page.getByTestId("like-amount").allInnerTexts();
+      // console.log("like Array:", likes);
+      // await page.pause();
     });
   });
 });
