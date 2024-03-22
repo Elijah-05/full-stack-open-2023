@@ -14,7 +14,7 @@ const AnecdoteForm = () => {
     e.target.anecedote.value = "";
     dispatch(createAnecdote(value));
     dispatch(newNotification("New anecdote note is created!"));
-    setTimeout(() => dispatch(resetNotification()), 3000);
+    setTimeout(() => dispatch(resetNotification()), 5000);
   };
 
   return (
