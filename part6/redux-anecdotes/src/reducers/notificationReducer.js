@@ -11,8 +11,8 @@ const notificationSlice = createSlice({
     newNotification: (state, action) => {
       state.message = action.payload;
     },
-    resetNotification: () => {
-      return { message: "" };
+    resetNotification: (state) => {
+      state.message = "";
     },
   },
 });

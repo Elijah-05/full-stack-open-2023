@@ -5,6 +5,7 @@ import {
   resetNotification,
 } from "../reducers/notificationReducer";
 
+let timeout;
 const AnecdoteList = () => {
   const anecdotes = useSelector(({ notes, filter }) => {
     if (!filter.trim()) return notes;
@@ -15,12 +16,13 @@ const AnecdoteList = () => {
   });
   const dispatch = useDispatch();
 
-  const vote = (id) => {
+  const vote = async (id) => {
+    clearTimeout(timeout);
     const findNote = anecdotes.find((anecdote) => anecdote.id === id).content;
     dispatch(makeVote(id));
 
     dispatch(newNotification(`You voted "${findNote}"`));
-    setTimeout(() => dispatch(resetNotification()), 5000);
+    timeout = setTimeout(() => dispatch(resetNotification()), 5000);
   };
 
   return (

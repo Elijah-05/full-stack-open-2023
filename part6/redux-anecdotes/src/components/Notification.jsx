@@ -11,11 +11,10 @@ const Notification = () => {
     borderWidth: 1,
     marginBottom: 10,
   };
-  if (notificationMessage) {
-    return <div style={style}>{notificationMessage}</div>;
-  }
 
-  return <></>;
+  if (!notificationMessage) return <></>;
+
+  return <div style={style}>{notificationMessage}</div>;
 };
 
 export default Notification;
