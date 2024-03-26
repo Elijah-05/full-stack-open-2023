@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 
 const Notification = () => {
+  const anecdotes = useSelector(({ notes }) => notes);
   const notificationMessage = useSelector(
     ({ notification: { message } }) => message
   );
@@ -12,7 +13,7 @@ const Notification = () => {
     marginBottom: 10,
   };
 
-  if (!notificationMessage) return <></>;
+  if (!notificationMessage || anecdotes.length === 0) return <></>;
 
   return <div style={style}>{notificationMessage}</div>;
 };
