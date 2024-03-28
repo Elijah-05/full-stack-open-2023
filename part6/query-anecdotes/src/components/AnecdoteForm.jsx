@@ -1,13 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createAnecdote } from "../axios_request/request";
+import { useContext } from "react";
+import NotificationContext from "../context";
 
 const AnecdoteForm = () => {
+  const { createAnecdoteNotification } = useContext(NotificationContext);
   const queryClient = useQueryClient();
   const createMutation = useMutation({
     mutationFn: createAnecdote,
     onSuccess: (res) => {
       const anecdotes = queryClient.getQueryData(["anecdotes"]);
       queryClient.setQueryData(["anecdotes"], [...anecdotes, res]);
+      createAnecdoteNotification();
     },
   });
 

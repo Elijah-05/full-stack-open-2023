@@ -2,8 +2,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
 import { getAnecdote, voteAnecdote } from "./axios_request/request";
+import { useContext } from "react";
+import NotificationContext from "./context";
 
 const App = () => {
+  const { voteNotification } = useContext(NotificationContext);
   const queryClient = useQueryClient();
   const voteMutation = useMutation({
     mutationFn: voteAnecdote,
@@ -13,6 +16,7 @@ const App = () => {
         anecdote.id === res.id ? res : anecdote
       );
       queryClient.setQueryData(["anecdotes"], updatedData);
+      voteNotification(res.content);
     },
   });
 
