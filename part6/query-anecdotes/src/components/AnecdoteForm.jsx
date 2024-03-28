@@ -11,8 +11,9 @@ const AnecdoteForm = () => {
     onSuccess: (res) => {
       const anecdotes = queryClient.getQueryData(["anecdotes"]);
       queryClient.setQueryData(["anecdotes"], [...anecdotes, res]);
-      createAnecdoteNotification();
+      createAnecdoteNotification(`New Anecdote note is created`);
     },
+    onError: (error) => createAnecdoteNotification(error.response.data.error),
   });
 
   const onCreate = (event) => {

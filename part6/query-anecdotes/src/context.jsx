@@ -14,7 +14,7 @@ const notificationReducer = (state, action) => {
     case actionTypes.VOTE:
       return `anecdote ${action.payload} voted`;
     case actionTypes.CREATE:
-      return `New Anecdote note is created`;
+      return action.payload;
     case actionTypes.RESET:
       return "";
     default:
@@ -40,9 +40,9 @@ export const NotificationContextProvider = ({ children }) => {
     return () => clearTimeout(timer);
   };
 
-  const createAnecdoteNotification = () => {
+  const createAnecdoteNotification = (message) => {
     clearTimeout(timer);
-    notificationDispatch({ type: actionTypes.CREATE });
+    notificationDispatch({ type: actionTypes.CREATE, payload: message });
     timer = setTimeout(
       () => notificationDispatch({ type: actionTypes.RESET }),
       5000
