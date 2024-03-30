@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Routes, Route, Link, useMatch, Navigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Link,
+  useMatch,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
+import { useField } from "./hooks";
 
 const Menu = () => {
   const padding = {
@@ -84,18 +92,25 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
-  const [info, setInfo] = useState("");
+  const content = useField("text");
+  const author = useField("text");
+  const info = useField("text");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.attributes.value,
+      author: author.attributes.value,
+      info: info.attributes.value,
       votes: 0,
     });
+  };
+
+  const onReset = (e) => {
+    e.preventDefault();
+    content.resetField();
+    author.resetField();
+    info.resetField();
   };
 
   return (
@@ -104,29 +119,18 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <input {...content.attributes} />
         </div>
         <div>
           author
-          <input
-            name="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
+          <input {...author.attributes} />
         </div>
         <div>
           url for more info
-          <input
-            name="info"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
+          <input {...info.attributes} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button onClick={onReset}>reset</button>
       </form>
     </div>
   );
@@ -151,6 +155,7 @@ const App = () => {
   ]);
 
   const [notification, setNotification] = useState("");
+  const navigate = useNavigate();
   const match = useMatch("/anecdote/:id");
   const filteredAnecdote = anecdotes.find(
     (anecdote) => anecdote.id === Number(match?.params.id)
@@ -159,6 +164,9 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000);
     setAnecdotes(anecdotes.concat(anecdote));
+    navigate("/");
+    setNotification(`a new anecdote ${anecdote.content} created!`);
+    setTimeout(() => setNotification(""), 5000);
   };
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
@@ -178,6 +186,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification && <p>{notification}</p>}
       <Routes>
         <Route path="/about" element={<About />} />
         <Route path="/create" element={<CreateNew addNew={addNew} />} />
