@@ -1,5 +1,6 @@
-import PropTypes from "prop-types";
-import { useState } from "react";
+import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Blog = ({ blog, user, handleDeleteBlog, handleLike }) => {
   const [showDetail, setShowDetail] = useState(false);
@@ -13,18 +14,18 @@ const Blog = ({ blog, user, handleDeleteBlog, handleLike }) => {
   return (
     <div
       data-testid="blogdiv"
-      style={{ border: "2px solid black", padding: "4px", margin: "4px" }}
+      style={{ border: '2px solid black', padding: '4px', margin: '4px' }}
     >
-      <div>
+      <Link to={`/blogs/${blog.id}`}>
         <span data-testid="blogtitle" className="blog-title">
           {blog?.title}
-        </span>{" "}
+        </span>{' '}
         <span className="blog-author">{blog?.author}</span>
-        <button data-testid="viewbtn" onClick={toggleShowDetail}>
+        {/* <button data-testid="viewbtn" onClick={toggleShowDetail}>
           {showDetail ? "hide" : "view"}
-        </button>
-      </div>
-      {showDetail && (
+        </button> */}
+      </Link>
+      {/* {showDetail && (
         <div>
           <p id="blog-url">{blog?.url}</p>
           <span data-testid="like-amount">likes {blog?.likes} </span>
@@ -44,12 +45,12 @@ const Blog = ({ blog, user, handleDeleteBlog, handleLike }) => {
             remove
           </button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
 
-Blog.displayName = "Blog";
+Blog.displayName = 'Blog';
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,

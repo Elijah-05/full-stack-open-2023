@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 const LoginForm = ({ handleLogin }) => {
-  const [credentials, setCredential] = useState({ username: "", password: "" });
+  const [credentials, setCredential] = useState({ username: '', password: '' });
 
   const handleChangeInput = (e) => {
     const target = e.target.name;
@@ -15,7 +15,7 @@ const LoginForm = ({ handleLogin }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form style={{ margin: '10px 0' }} onSubmit={handleSubmit}>
       <div>
         username
         <input

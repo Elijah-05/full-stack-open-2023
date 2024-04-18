@@ -1,6 +1,7 @@
 const blogRouter = require("express").Router();
 const Blog = require("./../models/blogsModel");
 const { userExtractor } = require("../utils/middlewares");
+const Comment = require("../models/commentModel");
 
 blogRouter.get("/", async (req, res) => {
   const result = await Blog.find({}).populate("user", {
@@ -69,6 +70,48 @@ blogRouter.put("/:id", userExtractor, async (req, res, next) => {
       res.status(201).send(response);
     }
   } else res.status(204).end();
+});
+
+blogRouter.get("/:id/comments", async (req, res) => {
+  const comment = await Comment.findOne({ blogID: req.params.id });
+  if (comment) {
+    res.send(comment);
+  } else res.status(204).end();
+});
+
+blogRouter.post("/:id/comments", async (req, res) => {
+  const blogID = req.params.id;
+  const comment = req.body.text.trim();
+  // console.log("blogIDDD: ", blogID);
+  // console.log("comment req: ", comment);
+  const isThereBlog = await Blog.findById(blogID);
+  // console.log("isThereBlog: ", isThereBlog);
+  if (comment && isThereBlog) {
+    const findCommentByID = await Comment.findOne({ blogID });
+    const commentID = findCommentByID ? findCommentByID._id.toString() : false;
+
+    if (findCommentByID) {
+      const response = await Comment.findByIdAndUpdate(
+        commentID,
+        {
+          blogID,
+          comments: commentID
+            ? findCommentByID.comments.concat(comment)
+            : [comment],
+        },
+        { new: true, runValidators: true, context: "query" }
+      );
+      console.log("comment found response: ", response);
+    } else {
+      const newComment = new Comment({
+        blogID,
+        comments: findCommentByID ? findCommentByID.concat(comment) : [comment],
+      });
+      const response = await newComment.save();
+      console.log("comment new response: ", response);
+    }
+  }
+  res.end();
 });
 
 module.exports = blogRouter;
