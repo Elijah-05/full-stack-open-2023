@@ -3,12 +3,14 @@ const Caption = ({ message }) => {
     return (
       <div
         style={{
-          backgroundColor: message.error ? "lightGray" : "lightGreen",
-          color: message.error ? "red" : "black",
-          border: `3px solid ${message.error ? "red" : "green"}`,
-          padding: "8px 5px",
-          fontSize: "1.5rem",
-          marginBottom: "15px",
+          backgroundColor: message.error ? '#FFBDC6' : 'lightGreen',
+          color: message.error ? 'red' : 'black',
+          padding: '8px 5px',
+          fontSize: '1.2rem',
+          borderRadius: '8px',
+          margin: '10px',
+          width: '100%',
+          textAlign: 'center',
         }}
       >
         {message.text}

@@ -15,23 +15,30 @@ const UsersPage = () => {
   }
 
   return (
-    <div>
+    <div style={{ padding: '10px' }}>
       <h1 style={{ marginBottom: '10px' }}>Users</h1>
       <div style={{ display: 'grid', gridTemplateColumns: '150px auto' }}>
-        <h3 style={{ paddingRight: '4px' }}>Names</h3>
-        <h3>Blogs Created</h3>
+        <h3 style={{ padding: '4px', backgroundColor: '#FFA500' }}>Names</h3>
+        <h3 style={{ padding: '4px', backgroundColor: '#94F708' }}>
+          Blogs Created
+        </h3>
       </div>
-      {query.data.map((user) => {
+      {query.data.map((user, i) => {
         return (
           <div
             key={user.id}
             style={{
               display: 'grid',
               gridTemplateColumns: '150px auto',
-              margin: '8px 0',
+              margin: '4px 0',
+              backgroundColor: i % 2 == 0 ? '#07F896' : '#04DEFB',
+              padding: '8px 14px',
             }}
           >
-            <Link to={`${user.id}`} style={{ paddingRight: '4px' }}>
+            <Link
+              to={`${user.id}`}
+              style={{ paddingRight: '4px', textDecoration: 'none' }}
+            >
               {user.name}
             </Link>
             <h4>{user.blogs.length}</h4>

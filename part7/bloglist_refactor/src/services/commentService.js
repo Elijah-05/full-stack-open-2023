@@ -5,4 +5,12 @@ const getAllComments = async (blogID) => {
   return res.data;
 };
 
-export { getAllComments };
+const createComment = async (commentObj) => {
+  const res = await axios.post(
+    `/api/blogs/${commentObj.blogID}/comments`,
+    commentObj,
+  );
+  return res;
+};
+
+export { getAllComments, createComment };

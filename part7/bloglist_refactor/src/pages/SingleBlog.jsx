@@ -5,13 +5,14 @@ import { deleteBlog, likeBlog } from '../reducers/blogReducer';
 import blogService from '../services/blogService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getUsers } from '../services/userService';
-import { getAllComments } from '../services/commentService';
+import { createComment, getAllComments } from '../services/commentService';
 
 const SingleBlog = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const blogs = useSelector(({ blogs }) => blogs);
   const [comment, setComment] = useState({});
+  const [commentInput, setCommentInput] = useState('');
   const user = useSelector(({ user }) => user);
   const { id } = useParams();
 
@@ -49,12 +50,29 @@ const SingleBlog = () => {
     }
   };
 
+  const handleCreatComment = async (e) => {
+    e.preventDefault();
+    if (commentInput.trim() && id) {
+      const res = await createComment({ blogID: id, text: commentInput });
+
+      if (res.status === 200) {
+        comment
+          ? setComment({
+              ...comment,
+              comments: comment.comments.concat(commentInput),
+            })
+          : setComment({ blogID: id, comments: [commentInput] });
+        setCommentInput('');
+      }
+    }
+  };
+
   if (!findBlog) {
     return <div>Unable to get blog data</div>;
   }
 
   return (
-    <div>
+    <div style={{ padding: '10px' }}>
       <h1 style={{ fontSize: '24px', paddingBottom: '6px' }}>
         {findBlog.title} {findBlog.author}
       </h1>
@@ -89,19 +107,39 @@ const SingleBlog = () => {
       </div>
       <div style={{ marginTop: '16px' }}>
         <h3>Comments</h3>
-        {comment?.comments?.length > 0 ? (
-          <ul style={{}}>
-            {comment?.comments?.map((comment) => {
-              return (
-                <li key={comment} style={{ marginLeft: '20px' }}>
-                  {comment}
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <div>No comments</div>
-        )}
+        <form onSubmit={handleCreatComment}>
+          <input
+            type="text"
+            value={commentInput}
+            onChange={(e) => setCommentInput(e.target.value)}
+            placeholder="enter your comment"
+            style={{
+              padding: '6px 2px',
+              margin: '2px 4px',
+              borderRadius: '3px',
+              border: 'none',
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              padding: '6px 16px',
+              borderRadius: '3px',
+              border: 'none',
+            }}
+          >
+            add comment
+          </button>
+        </form>
+        <ul style={{}}>
+          {comment?.comments?.map((comment) => {
+            return (
+              <li key={comment} style={{ marginLeft: '20px' }}>
+                {comment}
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );

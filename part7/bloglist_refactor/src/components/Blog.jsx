@@ -14,38 +14,22 @@ const Blog = ({ blog, user, handleDeleteBlog, handleLike }) => {
   return (
     <div
       data-testid="blogdiv"
-      style={{ border: '2px solid black', padding: '4px', margin: '4px' }}
+      style={{
+        padding: '8px 10px',
+        margin: '4px',
+        textDecoration: 'none',
+        backgroundColor: '#46B948',
+      }}
     >
-      <Link to={`/blogs/${blog.id}`}>
+      <Link
+        to={`/blogs/${blog.id}`}
+        style={{ textDecoration: 'none', color: 'white' }}
+      >
         <span data-testid="blogtitle" className="blog-title">
           {blog?.title}
         </span>{' '}
         <span className="blog-author">{blog?.author}</span>
-        {/* <button data-testid="viewbtn" onClick={toggleShowDetail}>
-          {showDetail ? "hide" : "view"}
-        </button> */}
       </Link>
-      {/* {showDetail && (
-        <div>
-          <p id="blog-url">{blog?.url}</p>
-          <span data-testid="like-amount">likes {blog?.likes} </span>
-          <button onClick={() => handleLike(blog?.id)}>like</button>
-          <p>{blog.author}</p>
-          <button
-            onClick={() => handleDeleteBlog(blog?.id)}
-            style={{
-              display: isOwner ? "" : "none",
-              backgroundColor: "red",
-              borderRadius: "4px",
-              border: "none",
-              padding: "6px 10px",
-              color: "white",
-            }}
-          >
-            remove
-          </button>
-        </div>
-      )} */}
     </div>
   );
 };

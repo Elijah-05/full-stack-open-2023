@@ -43,35 +43,88 @@ const MainLayout = () => {
   };
 
   return (
-    <div style={{ padding: '10px' }}>
+    <div style={{ padding: '' }}>
       {user ? (
         <>
-          <header style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <header
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              backgroundColor: '#343A40',
+              color: 'white',
+              padding: '12px 14px',
+            }}
+          >
             <h3>
-              <Link to="/" style={{ marginBottom: '10px' }}>
-                blogs
+              <Link
+                to="/"
+                style={{
+                  color: 'white',
+                  textDecoration: 'none',
+                  marginRight: '15px',
+                }}
+              >
+                Blogs
               </Link>
             </h3>
+
             <h3>
-              <Link to="/users" style={{ marginBottom: '10px' }}>
+              <Link
+                to="/users"
+                style={{
+                  color: 'white',
+                  textDecoration: 'none',
+                }}
+              >
                 users
               </Link>
             </h3>
 
-            <h3 style={{ margin: '10px 0' }}>
-              {user?.name} logged in{' '}
-              <button onClick={handleLogOut}>Log out</button>
+            <h3 style={{}}>
+              <span style={{ color: 'green' }}>{user?.name}</span>{' '}
+              <span style={{ opacity: '50%' }}>logged in</span>{' '}
+              <button
+                style={{
+                  margin: '0 8px',
+                  padding: '8px 14px',
+                  backgroundColor: '#007BFF',
+                  border: 'none',
+                  color: 'white',
+                  borderRadius: '6px',
+                }}
+                onClick={handleLogOut}
+              >
+                Log out
+              </button>
             </h3>
           </header>
           <Caption message={notification} />
-          <h1 style={{ marginBottom: '10px' }}>Blog App</h1>
+          <h1 style={{ padding: '10px', backgroundColor: 'lightgray' }}>
+            Blog App
+          </h1>
           <Outlet />
         </>
       ) : (
-        <div>
-          <h2 style={{ marginBottom: '10px' }}>Login to application</h2>
-          <Caption message={notification} />
-          <LoginForm handleLogin={handleLogin} />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            style={{
+              marginTop: '25px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <h2>Login to application</h2>
+            <Caption message={notification} />
+            <LoginForm handleLogin={handleLogin} />
+          </div>
         </div>
       )}
     </div>

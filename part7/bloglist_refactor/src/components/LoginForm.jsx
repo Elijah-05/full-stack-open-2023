@@ -15,27 +15,59 @@ const LoginForm = ({ handleLogin }) => {
   };
 
   return (
-    <form style={{ margin: '10px 0' }} onSubmit={handleSubmit}>
-      <div>
-        username
-        <input
-          type="text"
-          name="username"
-          value={credentials.username}
-          onChange={handleChangeInput}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="text"
-          name="password"
-          value={credentials.password}
-          onChange={handleChangeInput}
-        />
-      </div>
-      <button type="submit">Login</button>
-    </form>
+    <div style={{ display: 'flex', alignItems: 'center', padding: '25px' }}>
+      <form
+        style={{ margin: '10px 0', minWidth: '300px' }}
+        onSubmit={handleSubmit}
+      >
+        <div>
+          <input
+            type="text"
+            name="username"
+            placeholder="username"
+            value={credentials.username}
+            onChange={handleChangeInput}
+            style={{
+              padding: '6px 2px',
+              margin: '4px 4px',
+              borderRadius: '3px',
+              border: 'none',
+              width: '100%',
+            }}
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            name="password"
+            placeholder="password"
+            value={credentials.password}
+            onChange={handleChangeInput}
+            style={{
+              padding: '6px 2px',
+              margin: '4px 4px',
+              borderRadius: '3px',
+              border: 'none',
+              width: '100%',
+            }}
+          />
+        </div>
+        <button
+          type="submit"
+          style={{
+            width: '100%',
+            marginTop: '10px',
+            padding: '6px 12px',
+            borderRadius: '4px',
+            border: 'none',
+            backgroundColor: '#3688C9',
+            color: 'white',
+          }}
+        >
+          Login
+        </button>
+      </form>
+    </div>
   );
 };
 
