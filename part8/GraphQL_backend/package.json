@@ -1,0 +1,23 @@
+{
+  "name": "graphql_backend",
+  "version": "1.0.0",
+  "description": "graphql exercise for fullstack open course. this is the basic and fundamental of graphql backend using appolo server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "qraphql",
+    "GraphQL",
+    "GraphQL_API"
+  ],
+  "author": "Elijah Abebe",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.10.4",
+    "graphql": "^16.8.1",
+    "nodemon": "^3.1.0"
+  }
+}
