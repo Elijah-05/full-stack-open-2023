@@ -1,5 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
+const { v1: uuid } = require("uuid");
 
 let authors = [
   {
@@ -115,6 +116,11 @@ const typeDefs = `
     allBooks(name: String, genre: String): [Book!]!
     allAuthors: [Author]
   }
+
+  type Mutation {
+    addBook(title: String! author: String! published: Int! genres: [String!]!): Book
+    editAuthor(name: String! setBornTo: Int!): Author
+  }
 `;
 
 const resolvers = {
@@ -130,7 +136,7 @@ const resolvers = {
         args.name &&
         book.author.toLowerCase().trim() == args.name.toLowerCase().trim();
       const filter_genre = (book) =>
-        args.genre && book.genres.includes(args.genre);
+        args.genre ? book.genres.includes(args.genre) : false;
 
       const filteredBooks = books.filter((book) => {
         const filteredAuthor = filter_author(book);
@@ -148,12 +154,45 @@ const resolvers = {
     },
     allAuthors: () => authors,
   },
-  //   Book: {
-  //     title: () => "Elijah Ab",
-  //   },
   Author: {
     bookCount: (root) =>
       books.filter((book) => book.author == root.name).length,
+  },
+
+  Mutation: {
+    addBook: (root, args) => {
+      const newBook = { ...args, id: uuid() };
+      books = books.concat(newBook);
+
+      const findAuthor = authors.find(
+        (author) =>
+          author.name.toLowerCase().trim() === args.author.toLowerCase().trim()
+      );
+      if (!findAuthor) {
+        const newAuthor = { name: args.author, id: uuid() };
+        authors = authors.concat(newAuthor);
+      }
+      return newBook;
+    },
+    editAuthor: (root, args) => {
+      const findAuthor = authors.find(
+        (author) =>
+          author.name.toLowerCase().trim() === args.name.toLowerCase().trim()
+      );
+
+      const filter_change = (author) =>
+        author.name.toLowerCase().trim() === args.name.toLowerCase().trim()
+          ? { ...author, born: args.setBornTo }
+          : author;
+
+      if (findAuthor) {
+        authors = authors.map(filter_change);
+        return authors.find(
+          (author) =>
+            author.name.toLowerCase().trim() === args.name.toLowerCase().trim()
+        );
+      }
+    },
   },
 };
 
