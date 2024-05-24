@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { EDIT_AUTHOR, GET_AUTHOR } from "./../queries/queries";
+import Select from "react-select";
 
 const Authors = (props) => {
   const result = useQuery(GET_AUTHOR);
@@ -13,6 +14,13 @@ const Authors = (props) => {
     return null;
   }
 
+  const authorList = result.data.allAuthors.map((author) => {
+    return {
+      value: author.name,
+      label: author.name,
+    };
+  });
+
   const handleAuthorUpdate = async (e) => {
     e.preventDefault();
 
@@ -22,7 +30,6 @@ const Authors = (props) => {
         refetchQueries: [{ query: GET_AUTHOR }],
       });
 
-      setName("");
       setBorn("");
     }
   };
@@ -49,13 +56,22 @@ const Authors = (props) => {
       <h2>Set Birth Year</h2>
       <form onSubmit={handleAuthorUpdate}>
         <div>
-          <label htmlFor="name">name</label>
+          {/* <label htmlFor="name">name</label>
           <input
             id="name"
             name="name"
             type="text"
             value={name}
             onChange={({ target }) => setName(target.value)}
+          /> */}
+          <Select
+            className="basic-single"
+            classNamePrefix="select"
+            defaultValue={""}
+            //  isRtl={isRtl}
+            name="color"
+            options={authorList}
+            onChange={(val) => setName(val.value)}
           />
         </div>
         <div>
