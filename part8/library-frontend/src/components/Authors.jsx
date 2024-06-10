@@ -56,14 +56,6 @@ const Authors = (props) => {
       <h2>Set Birth Year</h2>
       <form onSubmit={handleAuthorUpdate}>
         <div>
-          {/* <label htmlFor="name">name</label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          /> */}
           <Select
             className="basic-single"
             classNamePrefix="select"
