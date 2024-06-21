@@ -19,8 +19,8 @@ const GET_AUTHOR = gql`
 `;
 
 const GET_BOOKS = gql`
-  query {
-    allBooks {
+  query findBooks($title: String, $genre: String) {
+    allBooks(title: $title, genre: $genre) {
       title
       author {
         name

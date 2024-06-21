@@ -5,7 +5,8 @@ import { useState } from "react";
 
 const Books = (props) => {
   const [filterGenre, setFilterGenre] = useState(null);
-  const { loading, data, error } = useQuery(GET_BOOKS, {
+  const { loading, data, error, refetch } = useQuery(GET_BOOKS, {
+    variables: { title: "", genre: filterGenre },
     skip: !props.show,
   });
 
@@ -13,12 +14,13 @@ const Books = (props) => {
     return null;
   }
 
-  const filteredBook = data?.allBooks.filter((book) =>
-    filterGenre ? book.genres.includes(filterGenre) : true
-  );
+  // const filteredBook = data?.allBooks.filter((book) =>
+  //   filterGenre ? book.genres.includes(filterGenre) : true
+  // );
 
   function handleGenreFilter(filter) {
     setFilterGenre(filter);
+    refetch();
   }
 
   return (
@@ -37,7 +39,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {filteredBook.map((a) => (
+          {data?.allBooks.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a?.author?.name}</td>
