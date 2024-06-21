@@ -37,7 +37,7 @@ const NewBook = (props) => {
   };
 
   return (
-    <div>
+    <div style={{ marginTop: "20px" }}>
       <form onSubmit={submit}>
         <div>
           title

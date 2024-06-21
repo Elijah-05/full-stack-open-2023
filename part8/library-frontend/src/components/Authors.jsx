@@ -4,17 +4,23 @@ import { useState } from "react";
 import { EDIT_AUTHOR, GET_AUTHOR } from "./../queries/queries";
 import Select from "react-select";
 
-const Authors = (props) => {
-  const result = useQuery(GET_AUTHOR);
+const Authors = ({ show, token }) => {
+  const result = useQuery(GET_AUTHOR, {
+    skip: !show,
+  });
   const [editAuthorPhone] = useMutation(EDIT_AUTHOR);
   const [name, setName] = useState("");
   const [born, setBorn] = useState("");
 
-  if (!props.show || result.loading) {
+  if (show && result.loading) {
+    return <p>Loading Authors...</p>;
+  }
+
+  if (!show) {
     return null;
   }
 
-  const authorList = result.data.allAuthors.map((author) => {
+  const authorList = result?.data?.allAuthors.map((author) => {
     return {
       value: author.name,
       label: author.name,
@@ -53,31 +59,35 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <h2>Set Birth Year</h2>
-      <form onSubmit={handleAuthorUpdate}>
-        <div>
-          <Select
-            className="basic-single"
-            classNamePrefix="select"
-            defaultValue={""}
-            //  isRtl={isRtl}
-            name="color"
-            options={authorList}
-            onChange={(val) => setName(val.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="born">born</label>
-          <input
-            id="born"
-            name="born"
-            type="number"
-            value={born}
-            onChange={({ target }) => setBorn(target.value)}
-          />
-        </div>
-        <button>Update author</button>
-      </form>
+      {token && (
+        <>
+          <h2>Set Birth Year</h2>
+          <form onSubmit={handleAuthorUpdate}>
+            <div>
+              <Select
+                className="basic-single"
+                classNamePrefix="select"
+                defaultValue={""}
+                //  isRtl={isRtl}
+                name="color"
+                options={authorList}
+                onChange={(val) => setName(val.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="born">born</label>
+              <input
+                id="born"
+                name="born"
+                type="number"
+                value={born}
+                onChange={({ target }) => setBorn(target.value)}
+              />
+            </div>
+            <button>Update author</button>
+          </form>
+        </>
+      )}
     </div>
   );
 };
@@ -85,6 +95,7 @@ const Authors = (props) => {
 Authors.displayName = "Authors";
 Authors.propTypes = {
   show: PropTypes.bool,
+  token: PropTypes.string,
 };
 
 export default Authors;

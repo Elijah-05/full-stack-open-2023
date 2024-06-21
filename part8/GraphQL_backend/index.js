@@ -58,7 +58,7 @@ const typeDefs = `
     bookCount: Int
     authorCount: Int
     allBooks(title: String, genre: String): [Book!]!
-    allAuthors: [Author]
+    allAuthors: [Author!]!
     me: User
   }
 
@@ -83,7 +83,7 @@ const resolvers = {
         args.title
           ? { title: args.title, genres: { $regex: args.genre } }
           : { genres: { $regex: args.genre } }
-      );
+      ).populate("author");
     },
     allAuthors: async () => await Author.find({}),
     me: async (root, args, context) => context.currentUser,
@@ -134,7 +134,7 @@ const resolvers = {
         });
       }
 
-      return newBook;
+      return newBook.populate("author");
     },
     editAuthor: async (root, args, { currentUser }) => {
       const findAuthor = await Author.findOne({ name: args.name });
