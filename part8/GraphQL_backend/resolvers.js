@@ -25,15 +25,14 @@ const resolvers = {
       ).populate("author");
     },
     allAuthors: async () => {
-      console.log("finding Author");
-      return Author.find({});
+      return Author.find({}).populate("bookCount");
     },
     me: async (root, args, context) => context.currentUser,
   },
   Author: {
     bookCount: async (root) => {
-      console.log("book Count");
-      return await Book.find({ author: root._id }).countDocuments();
+      const count = root.bookCount.length;
+      return count;
     },
   },
 
@@ -83,6 +82,8 @@ const resolvers = {
       const newBook = new Book(bookData);
       try {
         await newBook.save();
+        findAuthor.bookCount = await findAuthor.bookCount.concat(newBook._id);
+        await findAuthor.save();
       } catch (error) {
         throw new GraphQLError("Adding book failed", {
           extensions: {

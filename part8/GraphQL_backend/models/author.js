@@ -12,9 +12,7 @@ const schema = new mongoose.Schema({
   born: {
     type: Number,
   },
-  bookCount: {
-    type: Number,
-  },
+  bookCount: [{ type: mongoose.Schema.Types.ObjectId, ref: "Book" }],
 });
 
 schema.plugin(uniqueValidator);
