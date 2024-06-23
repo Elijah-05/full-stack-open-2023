@@ -3,16 +3,28 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Login from "./components/Login";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useSubscription } from "@apollo/client";
 import Caution from "./components/Caution";
+import { BOOK_ADDED } from "./queries/queries";
 
 const App = () => {
   const [token, setToken] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [caption, setCaption] = useState({
+    message: "",
+    error: false,
+  });
   const [page, setPage] = useState("authors");
   const client = useApolloClient();
-
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      handleCreateCaption({
+        message: `New Book titled "${data.data.bookAdded.title}" is Added!`,
+        error: false,
+      });
+    },
+  });
   const storedToken = localStorage.getItem("user-token");
+  let timeout;
 
   useEffect(() => {
     if (storedToken) {
@@ -25,6 +37,14 @@ const App = () => {
     setPage("authors");
     localStorage.clear();
     client.resetStore();
+  }
+
+  function handleCreateCaption(captionObj) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      setCaption({ message: "" });
+    }, 1000 * 5);
+    setCaption(captionObj);
   }
 
   return (
@@ -78,7 +98,7 @@ const App = () => {
         </button>
       </div>
 
-      <Caution errorMessage={errorMessage} />
+      <Caution caption={caption} />
 
       <Authors show={page === "authors"} token={token} />
 
@@ -89,7 +109,7 @@ const App = () => {
       <Login
         show={page === "login"}
         setToken={setToken}
-        setError={setErrorMessage}
+        setCaption={handleCreateCaption}
         setPage={setPage}
       />
     </div>

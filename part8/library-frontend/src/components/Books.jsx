@@ -1,22 +1,24 @@
 import { useQuery } from "@apollo/client";
-import { GET_BOOKS } from "./../queries/queries";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { FIND_BOOKS, GET_ALL_BOOKS } from "./../queries/queries";
 
 const Books = (props) => {
   const [filterGenre, setFilterGenre] = useState(null);
-  const { loading, data, error, refetch } = useQuery(GET_BOOKS, {
-    variables: { title: "", genre: filterGenre },
-    skip: !props.show,
-  });
+  const { loading, data, error, refetch } = useQuery(
+    filterGenre ? FIND_BOOKS : GET_ALL_BOOKS,
+    {
+      variables: { title: "", genre: filterGenre },
+    }
+  );
+
+  if (props.show && loading) {
+    return <p>Loading All Books...</p>;
+  }
 
   if (!props.show || loading || error) {
     return null;
   }
-
-  // const filteredBook = data?.allBooks.filter((book) =>
-  //   filterGenre ? book.genres.includes(filterGenre) : true
-  // );
 
   function handleGenreFilter(filter) {
     setFilterGenre(filter);
