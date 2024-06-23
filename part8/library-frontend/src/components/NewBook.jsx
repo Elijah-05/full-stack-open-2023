@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/client";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { ADD_BOOK, GET_ALL_BOOKS } from "../queries/queries";
+import { updateCache } from "../helpers/helpers";
 
 const NewBook = (props) => {
   const [title, setTitle] = useState("");
@@ -20,13 +21,7 @@ const NewBook = (props) => {
       console.log("OnError", messages);
     },
     update: (cache, response) => {
-      console.log("update Called!", cache);
-      cache.updateQuery({ query: GET_ALL_BOOKS }, ({ allBooks }) => {
-        console.log("cache update####3...", allBooks, "res: ", response);
-        return {
-          allBooks: allBooks.concat(response.data.addBook),
-        };
-      });
+      updateCache(cache, { query: GET_ALL_BOOKS }, response.data.addBook);
     },
   });
 

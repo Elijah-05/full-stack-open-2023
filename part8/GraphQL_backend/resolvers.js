@@ -9,7 +9,9 @@ const jwt = require("jsonwebtoken");
 
 const resolvers = {
   Query: {
-    bookCount: async () => Book.collection.countDocuments(),
+    bookCount: async () => {
+      return Book.collection.countDocuments();
+    },
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
       if (!args.title && !args.genre) {
@@ -22,18 +24,21 @@ const resolvers = {
           : { genres: { $regex: args.genre } }
       ).populate("author");
     },
-    allAuthors: async () => await Author.find({}),
+    allAuthors: async () => {
+      console.log("finding Author");
+      return Author.find({});
+    },
     me: async (root, args, context) => context.currentUser,
   },
   Author: {
     bookCount: async (root) => {
+      console.log("book Count");
       return await Book.find({ author: root._id }).countDocuments();
     },
   },
 
   Mutation: {
     addBook: async (root, args, { currentUser }) => {
-      console.log("add Book is called");
       const bookData = { ...args, id: uuid() };
       const authorData = { name: args.author };
       const findBook = await Book.findOne({ title: args.title });
@@ -78,7 +83,6 @@ const resolvers = {
       const newBook = new Book(bookData);
       try {
         await newBook.save();
-        console.log("book is Saved");
       } catch (error) {
         throw new GraphQLError("Adding book failed", {
           extensions: {

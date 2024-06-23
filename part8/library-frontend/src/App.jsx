@@ -5,7 +5,8 @@ import NewBook from "./components/NewBook";
 import Login from "./components/Login";
 import { useApolloClient, useSubscription } from "@apollo/client";
 import Caution from "./components/Caution";
-import { BOOK_ADDED } from "./queries/queries";
+import { BOOK_ADDED, GET_ALL_BOOKS } from "./queries/queries";
+import { updateCache } from "./helpers/helpers";
 
 const App = () => {
   const [token, setToken] = useState(null);
@@ -17,10 +18,12 @@ const App = () => {
   const client = useApolloClient();
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
+      const addedBook = data.data.bookAdded;
       handleCreateCaption({
-        message: `New Book titled "${data.data.bookAdded.title}" is Added!`,
+        message: `New Book titled "${addedBook.title}" is Added!`,
         error: false,
       });
+      updateCache(client.cache, { query: GET_ALL_BOOKS }, addedBook);
     },
   });
   const storedToken = localStorage.getItem("user-token");

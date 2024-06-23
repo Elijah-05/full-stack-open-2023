@@ -5,12 +5,12 @@ import { EDIT_AUTHOR, GET_AUTHOR } from "./../queries/queries";
 import Select from "react-select";
 
 const Authors = ({ show, token }) => {
-  const result = useQuery(GET_AUTHOR, {
-    skip: !show,
-  });
-  const [editAuthorPhone] = useMutation(EDIT_AUTHOR);
   const [name, setName] = useState("");
   const [born, setBorn] = useState("");
+  const result = useQuery(GET_AUTHOR);
+  const [editAuthorPhone] = useMutation(EDIT_AUTHOR, {
+    skip: born,
+  });
 
   if (show && result.loading) {
     return <p>Loading Authors...</p>;
