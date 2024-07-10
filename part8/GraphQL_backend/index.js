@@ -28,6 +28,8 @@ mongoose
     console.log("error connection to MongoDB:", error.message);
   });
 
+console.log("processArgv: ", process.argv);
+
 const typeDefs = `
   type Book {
     title: String!
