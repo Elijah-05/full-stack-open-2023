@@ -1,4 +1,23 @@
-const calculateBmi = (height: number, weight: number) => {
+interface BMIProps {
+  weight: number;
+  height: number;
+}
+
+const parseArguments = (args: string[]): BMIProps => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+  if (args.length > 4) throw new Error("Too many arguments");
+
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    return {
+      weight: Number(args[2]),
+      height: Number(args[3]),
+    };
+  } else {
+    throw new Error("Provided values were not numbers!");
+  }
+};
+
+const calculateBmi = ({ weight, height }: BMIProps) => {
   if (typeof height !== "number" || typeof weight !== "number") {
     throw new Error(
       "function parameters are wrong types! The should be both numbers."
@@ -20,4 +39,13 @@ const calculateBmi = (height: number, weight: number) => {
   }
 };
 
-console.log(calculateBmi(180, 74));
+try {
+  const { weight, height } = parseArguments(process.argv);
+  console.log(calculateBmi({ weight, height }));
+} catch (error: unknown) {
+  let errorMsg = "Something wend wrong.";
+  if (error instanceof Error) {
+    errorMsg += " Error: " + error.message;
+  }
+  console.log(errorMsg);
+}

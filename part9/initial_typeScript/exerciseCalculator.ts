@@ -8,6 +8,22 @@ interface ReturnObject {
   average: number;
 }
 
+const argsForExercise = (args: string[]) => {
+  if (args.length < 3) throw new Error("Not enough arguments");
+  const isAllArgsNumber = args
+    .slice(2)
+    .every((arg) => typeof Number(arg) === "number");
+
+  if (isAllArgsNumber) {
+    return {
+      exArr: args.slice(3).map((arg) => Number(arg)),
+      target: Number(args[2]),
+    };
+  } else {
+    throw new Error("Provided values were not numbers!");
+  }
+};
+
 function calculateExercise(
   numArr: number[],
   target: number
@@ -41,9 +57,9 @@ function calculateExercise(
       result.ratingDescription = "You acheived your target successfully";
       break;
     case result.average < target && result.average > target * 0.75:
-      result.success = true;
+      result.success = false;
       result.rating = 2;
-      result.ratingDescription = "You acheived your target successfully";
+      result.ratingDescription = "not too bad but could be better";
       break;
     case result.average >= target * 0.5:
       result.success = false;
@@ -66,4 +82,13 @@ function calculateExercise(
   return result;
 }
 
-console.log(calculateExercise([3, 0, 2, 1, 0, 0, 1], 2));
+try {
+  const { exArr, target } = argsForExercise(process.argv);
+  console.log(calculateExercise(exArr, target));
+} catch (error: unknown) {
+  let errorMsg = "Something Went Wrong.";
+  if (error instanceof Error) {
+    errorMsg += " Error: " + error.message;
+  }
+  console.log(errorMsg);
+}
