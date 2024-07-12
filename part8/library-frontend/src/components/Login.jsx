@@ -3,14 +3,14 @@ import PropTypes from "prop-types";
 import { useMutation } from "@apollo/client";
 import { LOG_IN } from "../queries/queries";
 
-const Login = ({ show, setError, setToken, setPage }) => {
+const Login = ({ show, setCaption, setToken, setPage }) => {
   const [credentials, setCredentials] = useState({
     name: "",
     password: "",
   });
   const [login, result] = useMutation(LOG_IN, {
     onError: (error) => {
-      setError(error?.graphQLErrors[0].message);
+      setCaption({ message: error?.graphQLErrors[0].message, error: true });
     },
   });
 
@@ -75,7 +75,7 @@ const Login = ({ show, setError, setToken, setPage }) => {
 Login.displayName = "Login";
 Login.propTypes = {
   show: PropTypes.bool,
-  setError: PropTypes.func,
+  setCaption: PropTypes.func,
   setToken: PropTypes.func,
   setPage: PropTypes.func,
 };
