@@ -28,7 +28,7 @@ app.get('/bmi', (req, res) => {
 
 app.post('/exercises', (req, res) => {
   const {daily_exercises, target} = req.body
-  const isExeNumArray = daily_exercises.every((exercise: Array<number | string>) => typeof (exercise) === 'number')
+  const isExeNumArray = daily_exercises?.every((exercise: Array<number | string>) => typeof (exercise) === 'number')
 
   if(!isExeNumArray || isNaN(Number(target))) {
     return res.status(400).send({error: "malformated parameters"})
