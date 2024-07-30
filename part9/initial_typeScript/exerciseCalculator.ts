@@ -82,13 +82,20 @@ function calculateExercise(
   return result;
 }
 
-try {
-  const { exArr, target } = argsForExercise(process.argv);
-  console.log(calculateExercise(exArr, target));
-} catch (error: unknown) {
-  let errorMsg = "Something Went Wrong.";
-  if (error instanceof Error) {
-    errorMsg += " Error: " + error.message;
+
+if(require.main === module) {
+  try {
+    const { exArr, target } = argsForExercise(process.argv);
+    console.log(calculateExercise(exArr, target));
+  } catch (error: unknown) {
+    let errorMsg = "Something Went Wrong.";
+    if (error instanceof Error) {
+      errorMsg += " Error: " + error.message;
+    }
+    console.log(errorMsg);
   }
-  console.log(errorMsg);
 }
+
+
+  
+export default calculateExercise

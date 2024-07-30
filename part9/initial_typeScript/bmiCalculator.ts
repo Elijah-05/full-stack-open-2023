@@ -39,13 +39,17 @@ const calculateBmi = ({ weight, height }: BMIProps) => {
   }
 };
 
-try {
-  const { weight, height } = parseArguments(process.argv);
-  console.log(calculateBmi({ weight, height }));
-} catch (error: unknown) {
-  let errorMsg = "Something wend wrong.";
-  if (error instanceof Error) {
-    errorMsg += " Error: " + error.message;
+if(require.main === module) {
+  try {
+    const { weight, height } = parseArguments(process.argv);
+    console.log(calculateBmi({ weight, height }));
+  } catch (error: unknown) {
+    let errorMsg = "Something wend wrong.";
+    if (error instanceof Error) {
+      errorMsg += " Error: " + error.message;
+    }
+    console.log(errorMsg);
   }
-  console.log(errorMsg);
 }
+
+export default calculateBmi
