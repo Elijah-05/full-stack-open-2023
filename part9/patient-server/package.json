@@ -5,7 +5,10 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "dev": "ts-node-dev index.ts",
+    "start": "node build/index.js",
+    "lint": "eslint --ext .ts ."
   },
   "keywords": [
     "patient-server",
@@ -15,6 +18,14 @@
   "author": "Elyas Abebe",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.8.0",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
   }
 }
