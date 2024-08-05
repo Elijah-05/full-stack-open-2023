@@ -14,4 +14,6 @@ const getSecurePatients = (): SecurePatientDataType[] => {
   });
 };
 
+
+
 export { getAllPatients, getSecurePatients };
