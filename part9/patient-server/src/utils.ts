@@ -1,4 +1,9 @@
-import { GenderEnum, NewPatientType } from "./types";
+import { getAllPatients } from "./services/patientService";
+import {
+  GenderEnum,
+  NewPatientType,
+  PatientDataType
+} from "./types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
@@ -52,7 +57,7 @@ const parseOccupation = (occupation: unknown): string => {
   return occupation;
 };
 
-export const toNewPatientEntry = (object: unknown): NewPatientType => {
+const toNewPatientEntry = (object: unknown): NewPatientType => {
   if (!object || typeof object !== "object") {
     throw new Error("Incorrect or missing data");
   }
@@ -69,6 +74,7 @@ export const toNewPatientEntry = (object: unknown): NewPatientType => {
       ssn: parseSSN(object.ssn),
       gender: parseGender(object.gender),
       occupation: parseOccupation(object.occupation),
+      entries: [],
     };
 
     return patientEntry;
@@ -76,3 +82,11 @@ export const toNewPatientEntry = (object: unknown): NewPatientType => {
 
   throw new Error("Incorrect data: a field missing");
 };
+
+const findPatientById = (id: string): PatientDataType | undefined => {
+  const patient = getAllPatients().find((p) => p.id === id);
+  return patient;
+};
+
+export { findPatientById, toNewPatientEntry };
+

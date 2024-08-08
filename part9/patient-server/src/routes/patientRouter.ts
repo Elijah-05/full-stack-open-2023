@@ -1,10 +1,20 @@
 import express from "express";
 import { addPatient, getSecurePatients } from "../services/patientService";
-import { toNewPatientEntry } from "../utils";
+import { findPatientById, toNewPatientEntry } from "../utils";
 const router = express.Router();
 
 router.get("/", (_req, res) => {
   res.send(getSecurePatients());
+});
+
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
+  try {
+    const patient = findPatientById(id);
+    res.json(patient);
+  } catch (error) {
+    res.status(400).send({ error: "Patient not found" });
+  }
 });
 
 router.post("/", (req, res) => {
