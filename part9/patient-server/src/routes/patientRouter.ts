@@ -47,7 +47,6 @@ router.post("/:id/entries", (req, res) => {
     const parsedEntry = toNewEntry(req.body);
     const newEntry = newPatientEntry(parsedEntry);
     patient.entries.push(newEntry);
-    console.log("PATIENT INFO: ", newEntry);
     return res.json(newEntry);
   } catch (error: unknown) {
     let errorMessage = "Something went wrong";

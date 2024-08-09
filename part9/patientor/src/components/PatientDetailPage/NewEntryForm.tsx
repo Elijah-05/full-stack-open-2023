@@ -1,22 +1,45 @@
 import { Button, Grid, TextField } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
-import { HealthType } from "../../types";
+import { EntryWithoutId, HealthType } from "../../types";
 
 const initialFormValues = {
   type: HealthType.HEALTH_CHECK,
   description: "",
   date: "",
   specialist: "",
-  healthCheckRating: 1,
+  healthCheckRating: "1",
   diagnosisCodes: "",
 };
 
-const NewEntryForm = () => {
+interface NewEntryFormProp {
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+  handleAddNewEntry: (formatedEntry: EntryWithoutId) => void;
+  handleError: (message: string) => void;
+}
+
+const NewEntryForm = ({
+  setShowForm,
+  handleAddNewEntry,
+  handleError,
+}: NewEntryFormProp) => {
   const [entries, setEntries] = useState(initialFormValues);
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    //
+    if (!entries.date || !entries.description || !entries.specialist) {
+      handleError("All fields are required");
+    } else {
+      const formatedEntry: EntryWithoutId = {
+        date: entries.date,
+        description: entries.description,
+        specialist: entries.specialist,
+        healthCheckRating: Number(entries.healthCheckRating),
+        type: HealthType.HEALTH_CHECK,
+        diagnosisCodes: entries.diagnosisCodes.split(","),
+      };
+
+      handleAddNewEntry(formatedEntry);
+    }
   };
 
   return (
@@ -36,6 +59,7 @@ const NewEntryForm = () => {
         />
         <TextField
           label="Date"
+          placeholder="YYYY-MM-DD"
           fullWidth
           value={entries.date}
           onChange={({ target }) =>
@@ -44,7 +68,7 @@ const NewEntryForm = () => {
         />
         <TextField
           label="Specialist"
-          placeholder="YYYY-MM-DD"
+          placeholder="specialist name"
           fullWidth
           value={entries.specialist}
           onChange={({ target }) =>
@@ -56,7 +80,13 @@ const NewEntryForm = () => {
           fullWidth
           value={entries.healthCheckRating}
           onChange={({ target }) =>
-            setEntries({ ...entries, healthCheckRating: Number(target.value) })
+            setEntries({
+              ...entries,
+              healthCheckRating:
+                !isNaN(Number(target.value)) || target.value === ""
+                  ? target.value
+                  : entries.healthCheckRating,
+            })
           }
         />
         <TextField
@@ -74,7 +104,10 @@ const NewEntryForm = () => {
               variant="contained"
               style={{ float: "left" }}
               type="button"
-              onClick={() => {}}
+              onClick={() => {
+                handleError("");
+                setShowForm(false);
+              }}
             >
               Cancel
             </Button>

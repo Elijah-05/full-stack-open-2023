@@ -3,19 +3,23 @@ import MaleIcon from "@mui/icons-material/Male";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import patientService from "../../services/patients";
-import { Diagnosis, Entry, PatientDetail } from "../../types";
+import { Diagnosis, Entry, EntryWithoutId, PatientDetail } from "../../types";
 import HospitalEntryComponent from "./HospitalEntryComponent";
 import HealthCheckEntryComponent from "./HealthCheckEntryComponent";
 import OccupationalHealthEntryComponent from "./OccupationalHealthEntryComponent";
-import { Button } from "@mui/material";
+import { Alert, Button } from "@mui/material";
 import NewEntryForm from "./NewEntryForm";
+import { AxiosError } from "axios";
 
 const PatientDetailPage = () => {
   const [patientInfo, setPatientInfo] = useState<PatientDetail | null>(null);
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
   const params = useParams();
   const patientId = params.id;
+  let timeout: number;
 
   useEffect(() => {
     if (patientId) {
@@ -52,6 +56,35 @@ const PatientDetailPage = () => {
     } else <li>{code}</li>;
   }
 
+  const handleAddNewEntry = (entry: EntryWithoutId): void => {
+    if (patientInfo) {
+      patientService
+        .addNewEntry(patientInfo.id, entry)
+        .then((res) => {
+          setPatientInfo({
+            ...patientInfo,
+            entries: patientInfo.entries.concat(res),
+          });
+        })
+        .catch((err: AxiosError) => {
+          handleError(err.response?.data as string);
+        });
+    } else handleError("Patient ID Not Found");
+  };
+
+  const handleError = (message: string): void => {
+    // clearTimeout(timeout);
+    if (!message) {
+      setError("");
+    } else {
+      clearTimeout(timeout);
+      setError(message);
+      timeout = setTimeout(() => {
+        setError("");
+      }, 1000 * 3);
+    }
+  };
+
   return patientInfo ? (
     <div style={{ marginTop: "25px" }}>
       <h2>
@@ -59,7 +92,14 @@ const PatientDetailPage = () => {
       </h2>
       <p>ssn: {patientInfo.ssn}</p>
       <p>occupation: {patientInfo.occupation}</p>
-      <NewEntryForm />
+      {error && <Alert severity="error">{error}</Alert>}
+      {showForm && (
+        <NewEntryForm
+          setShowForm={setShowForm}
+          handleAddNewEntry={handleAddNewEntry}
+          handleError={handleError}
+        />
+      )}
       <div style={{ marginTop: "14px" }}>
         <h3>Entries</h3>
         {patientInfo.entries.map((entry: Entry) => {
@@ -93,7 +133,12 @@ const PatientDetailPage = () => {
           }
         })}
       </div>
-      <Button variant="contained" color="primary" sx={{ marginTop: "15px" }}>
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{ marginTop: "15px" }}
+        onClick={() => setShowForm(true)}
+      >
         ADD NEW ENTRY
       </Button>
     </div>
