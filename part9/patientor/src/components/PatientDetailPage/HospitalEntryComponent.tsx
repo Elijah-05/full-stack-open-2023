@@ -9,11 +9,11 @@ const HospitalEntryComponent = ({
   entry: HospitalEntry;
   findDiagnose: (code: Diagnosis["code"]) => JSX.Element | undefined;
 }) => {
-  const { id, date, description, specialist } = entry;
+  const { date, description, specialist } = entry;
 
   return (
     <div className="entry-container">
-      <div key={id}>
+      <div>
         <p>
           {date} <LocalHospitalIcon />
         </p>

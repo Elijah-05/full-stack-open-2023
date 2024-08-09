@@ -7,6 +7,7 @@ import { Diagnosis, Entry, PatientDetail } from "../../types";
 import HospitalEntryComponent from "./HospitalEntryComponent";
 import HealthCheckEntryComponent from "./HealthCheckEntryComponent";
 import OccupationalHealthEntryComponent from "./OccupationalHealthEntryComponent";
+import { Button } from "@mui/material";
 
 const PatientDetailPage = () => {
   const [patientInfo, setPatientInfo] = useState<PatientDetail | null>(null);
@@ -64,6 +65,7 @@ const PatientDetailPage = () => {
             case "Hospital":
               return (
                 <HospitalEntryComponent
+                  key={entry.id}
                   entry={entry}
                   findDiagnose={findDiagnose}
                 />
@@ -71,6 +73,7 @@ const PatientDetailPage = () => {
             case "OccupationalHealthcare":
               return (
                 <OccupationalHealthEntryComponent
+                  key={entry.id}
                   entry={entry}
                   findDiagnose={findDiagnose}
                 />
@@ -78,6 +81,7 @@ const PatientDetailPage = () => {
             case "HealthCheck":
               return (
                 <HealthCheckEntryComponent
+                  key={entry.id}
                   entry={entry}
                   findDiagnose={findDiagnose}
                 />
@@ -87,6 +91,9 @@ const PatientDetailPage = () => {
           }
         })}
       </div>
+      <Button variant="contained" color="primary" sx={{ marginTop: "15px" }}>
+        ADD NEW ENTRY
+      </Button>
     </div>
   ) : (
     <div>

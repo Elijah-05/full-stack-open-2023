@@ -10,7 +10,7 @@ const HealthCheckEntryComponent = ({
   entry: HealthCheckEntry;
   findDiagnose: (code: Diagnosis["code"]) => JSX.Element | undefined;
 }) => {
-  const { id, date, description, specialist, healthCheckRating } = entry;
+  const { date, description, specialist, healthCheckRating } = entry;
 
   const starIconColor = (): string => {
     switch (healthCheckRating) {
@@ -29,7 +29,7 @@ const HealthCheckEntryComponent = ({
 
   return (
     <div className="entry-container">
-      <div key={id}>
+      <div>
         <p>
           {date} <MedicationLiquidIcon />
         </p>

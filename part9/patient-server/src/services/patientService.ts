@@ -3,7 +3,7 @@ import patientEntries from "../../data/patients";
 import {
   NewPatientType,
   PatientDataType,
-  SecurePatientDataType,
+  SecurePatientDataType
 } from "../types";
 
 const allPatients: PatientDataType[] = patientEntries;
@@ -19,6 +19,11 @@ const getSecurePatients = (): SecurePatientDataType[] => {
   });
 };
 
+const findPatientById = (id: string): PatientDataType | undefined => {
+  const patient = getAllPatients().find((p) => p.id === id);
+  return patient;
+};
+
 const addPatient = (patientEntry: NewPatientType) => {
   const newPatientEntry = {
     id: uuidv4(),
@@ -28,4 +33,4 @@ const addPatient = (patientEntry: NewPatientType) => {
   return newPatientEntry;
 };
 
-export { addPatient, getAllPatients, getSecurePatients };
+export { addPatient, findPatientById, getAllPatients, getSecurePatients };
