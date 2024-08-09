@@ -1,12 +1,16 @@
+import FemaleIcon from "@mui/icons-material/Female";
+import MaleIcon from "@mui/icons-material/Male";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import patientService from "../../services/patients";
-import { Patient } from "../../types";
-import MaleIcon from "@mui/icons-material/Male";
-import FemaleIcon from "@mui/icons-material/Female";
+import { Diagnosis, Entry, PatientDetail } from "../../types";
+import HospitalEntryComponent from "./HospitalEntryComponent";
+import HealthCheckEntryComponent from "./HealthCheckEntryComponent";
+import OccupationalHealthEntryComponent from "./OccupationalHealthEntryComponent";
 
 const PatientDetailPage = () => {
-  const [patientInfo, setPatientInfo] = useState<Patient | null>(null);
+  const [patientInfo, setPatientInfo] = useState<PatientDetail | null>(null);
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const params = useParams();
   const patientId = params.id;
@@ -14,6 +18,7 @@ const PatientDetailPage = () => {
   useEffect(() => {
     if (patientId) {
       setIsFetching(true);
+      patientService.getDiagnoses().then((d) => setDiagnoses(d));
       patientService
         .getPatient(patientId)
         .then((res) => setPatientInfo(res))
@@ -34,6 +39,17 @@ const PatientDetailPage = () => {
     }
   };
 
+  function findDiagnose(code: Diagnosis["code"]) {
+    const diagnose = diagnoses.find((d) => d.code === code);
+    if (diagnose) {
+      return (
+        <li key={code}>
+          {diagnose.code}: {diagnose.name}
+        </li>
+      );
+    } else <li>{code}</li>;
+  }
+
   return patientInfo ? (
     <div style={{ marginTop: "25px" }}>
       <h2>
@@ -41,6 +57,36 @@ const PatientDetailPage = () => {
       </h2>
       <p>ssn: {patientInfo.ssn}</p>
       <p>occupation: {patientInfo.occupation}</p>
+      <div style={{ marginTop: "14px" }}>
+        <h3>Entries</h3>
+        {patientInfo.entries.map((entry: Entry) => {
+          switch (entry.type) {
+            case "Hospital":
+              return (
+                <HospitalEntryComponent
+                  entry={entry}
+                  findDiagnose={findDiagnose}
+                />
+              );
+            case "OccupationalHealthcare":
+              return (
+                <OccupationalHealthEntryComponent
+                  entry={entry}
+                  findDiagnose={findDiagnose}
+                />
+              );
+            case "HealthCheck":
+              return (
+                <HealthCheckEntryComponent
+                  entry={entry}
+                  findDiagnose={findDiagnose}
+                />
+              );
+            default:
+              break;
+          }
+        })}
+      </div>
     </div>
   ) : (
     <div>

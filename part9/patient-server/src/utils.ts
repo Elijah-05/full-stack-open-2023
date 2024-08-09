@@ -1,9 +1,5 @@
 import { getAllPatients } from "./services/patientService";
-import {
-  GenderEnum,
-  NewPatientType,
-  PatientDataType
-} from "./types";
+import { Gender, NewPatientType, PatientDataType } from "./types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
@@ -36,13 +32,13 @@ const parseSSN = (ssn: unknown): string => {
   return ssn;
 };
 
-const isGenderType = (gender: string): gender is GenderEnum => {
-  return Object.values(GenderEnum)
+const isGenderType = (gender: string): gender is Gender => {
+  return Object.values(Gender)
     .map((G) => G.toString())
     .includes(gender);
 };
 
-const parseGender = (gender: unknown): GenderEnum => {
+const parseGender = (gender: unknown): Gender => {
   if (!gender || !isString(gender) || !isGenderType(gender)) {
     throw new Error("Invalid or missing gender");
   }
@@ -89,4 +85,3 @@ const findPatientById = (id: string): PatientDataType | undefined => {
 };
 
 export { findPatientById, toNewPatientEntry };
-

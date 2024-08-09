@@ -14,7 +14,7 @@ const getAllPatients = (): PatientDataType[] => {
 
 const getSecurePatients = (): SecurePatientDataType[] => {
   return allPatients.map((patient) => {
-    const { ssn, ...rest } = patient;
+    const { ssn, entries, ...rest } = patient;
     return rest;
   });
 };
