@@ -1,9 +1,9 @@
-import { v4 as uuidv4 } from "uuid";
 import express from "express";
 import {
   addPatient,
   findPatientById,
   getSecurePatients,
+  newPatientEntry,
 } from "../services/patientService";
 import { toNewEntry, toNewPatientEntry } from "../utils";
 const router = express.Router();
@@ -44,11 +44,9 @@ router.post("/:id/entries", (req, res) => {
       return res.status(404).send({ error: "Patient not found" });
     }
 
-    const newEntry = toNewEntry(req.body);
-    patient.entries.push({
-      ...newEntry,
-      id: uuidv4(),
-    });
+    const parsedEntry = toNewEntry(req.body);
+    const newEntry = newPatientEntry(parsedEntry);
+    patient.entries.push(newEntry);
     console.log("PATIENT INFO: ", newEntry);
     return res.json(newEntry);
   } catch (error: unknown) {

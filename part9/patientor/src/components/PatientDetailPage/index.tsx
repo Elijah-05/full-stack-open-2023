@@ -8,6 +8,7 @@ import HospitalEntryComponent from "./HospitalEntryComponent";
 import HealthCheckEntryComponent from "./HealthCheckEntryComponent";
 import OccupationalHealthEntryComponent from "./OccupationalHealthEntryComponent";
 import { Button } from "@mui/material";
+import NewEntryForm from "./NewEntryForm";
 
 const PatientDetailPage = () => {
   const [patientInfo, setPatientInfo] = useState<PatientDetail | null>(null);
@@ -58,6 +59,7 @@ const PatientDetailPage = () => {
       </h2>
       <p>ssn: {patientInfo.ssn}</p>
       <p>occupation: {patientInfo.occupation}</p>
+      <NewEntryForm />
       <div style={{ marginTop: "14px" }}>
         <h3>Entries</h3>
         {patientInfo.entries.map((entry: Entry) => {
