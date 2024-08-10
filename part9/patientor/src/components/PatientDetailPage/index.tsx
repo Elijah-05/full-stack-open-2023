@@ -1,6 +1,6 @@
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import patientService from "../../services/patients";
 import { Diagnosis, Entry, EntryWithoutId, PatientDetail } from "../../types";
@@ -11,16 +11,24 @@ import { Alert, Button } from "@mui/material";
 import NewEntryForm from "./NewEntryForm";
 import { AxiosError } from "axios";
 
+interface ChildRef {
+  clearAllInputs: () => void;
+}
+
 const PatientDetailPage = () => {
   const [patientInfo, setPatientInfo] = useState<PatientDetail | null>(null);
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [isEntryCreated, setIsEntryCreated] = useState<boolean>(false);
   const params = useParams();
   const patientId = params.id;
-  const diagnosesCodeList: Array<Diagnosis["code"]> = diagnoses.map((d) => d.code);
-  let timeout: NodeJS.Timeout;
+  const diagnosesCodeList: Array<Diagnosis["code"]> = diagnoses.map(
+    (d) => d.code
+  );
+  const newEntryFormRef = useRef<ChildRef>(null);
+  let timeout: number;
 
   useEffect(() => {
     if (patientId) {
@@ -66,6 +74,13 @@ const PatientDetailPage = () => {
             ...patientInfo,
             entries: patientInfo.entries.concat(res),
           });
+          if (newEntryFormRef.current) {
+            newEntryFormRef.current.clearAllInputs();
+          }
+          setIsEntryCreated(true);
+          setTimeout(() => {
+            setIsEntryCreated(false);
+          }, 1000 * 3);
         })
         .catch((err: AxiosError) => {
           handleError(err.response?.data as string);
@@ -94,8 +109,12 @@ const PatientDetailPage = () => {
       <p>ssn: {patientInfo.ssn}</p>
       <p>occupation: {patientInfo.occupation}</p>
       {error && <Alert severity="error">{error}</Alert>}
+      {isEntryCreated && (
+        <Alert severity="success">Entry Successfully Created</Alert>
+      )}
       {showForm && (
         <NewEntryForm
+          ref={newEntryFormRef}
           setShowForm={setShowForm}
           handleAddNewEntry={handleAddNewEntry}
           handleError={handleError}
