@@ -282,7 +282,7 @@ const NewEntryForm = forwardRef(
 
     return (
       <div>
-        <h3>New HealthCheck entry</h3>
+        <h3>New Health entry</h3>
         <form
           onSubmit={handleSubmit}
           style={{ display: "flex", flexDirection: "column", gap: "14px" }}
