@@ -19,7 +19,8 @@ const PatientDetailPage = () => {
   const [error, setError] = useState<string>("");
   const params = useParams();
   const patientId = params.id;
-  let timeout: number;
+  const diagnosesCodeList: Array<Diagnosis["code"]> = diagnoses.map((d) => d.code);
+  let timeout: NodeJS.Timeout;
 
   useEffect(() => {
     if (patientId) {
@@ -98,6 +99,7 @@ const PatientDetailPage = () => {
           setShowForm={setShowForm}
           handleAddNewEntry={handleAddNewEntry}
           handleError={handleError}
+          diagnosesCodeList={diagnosesCodeList}
         />
       )}
       <div style={{ marginTop: "14px" }}>

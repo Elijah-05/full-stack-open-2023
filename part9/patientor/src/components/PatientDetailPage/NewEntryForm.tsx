@@ -1,44 +1,136 @@
-import { Button, Grid, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  Grid,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
 import { SyntheticEvent, useState } from "react";
-import { EntryWithoutId, HealthType } from "../../types";
+import { BaseEntry, Diagnosis, EntryWithoutId, HealthType } from "../../types";
 
 const initialFormValues = {
   type: HealthType.HEALTH_CHECK,
   description: "",
   date: "",
   specialist: "",
-  healthCheckRating: "1",
-  diagnosisCodes: "",
 };
 
 interface NewEntryFormProp {
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
   handleAddNewEntry: (formatedEntry: EntryWithoutId) => void;
   handleError: (message: string) => void;
+  diagnosesCodeList: Array<Diagnosis["code"]>;
 }
 
 const NewEntryForm = ({
   setShowForm,
   handleAddNewEntry,
   handleError,
+  diagnosesCodeList,
 }: NewEntryFormProp) => {
-  const [entries, setEntries] = useState(initialFormValues);
+  const [baseEntry, setBaseEntry] =
+    useState<Omit<BaseEntry, "id">>(initialFormValues);
+  const [type, setType] = useState<HealthType>(HealthType.HEALTH_CHECK);
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    if (!entries.date || !entries.description || !entries.specialist) {
+    if (!baseEntry.date || !baseEntry.description || !baseEntry.specialist) {
       handleError("All fields are required");
     } else {
-      const formatedEntry: EntryWithoutId = {
-        date: entries.date,
-        description: entries.description,
-        specialist: entries.specialist,
-        healthCheckRating: Number(entries.healthCheckRating),
+      const formatedBaseEntry = {
+        date: baseEntry.date,
+        description: baseEntry.description,
+        specialist: baseEntry.specialist,
         type: HealthType.HEALTH_CHECK,
-        diagnosisCodes: entries.diagnosisCodes.split(","),
       };
 
-      handleAddNewEntry(formatedEntry);
+      switch (type) {
+        case HealthType.HEALTH_CHECK:
+          const healthCheckEntry = {
+            ...formatedBaseEntry,
+            type: HealthType.HEALTH_CHECK,
+          };
+          break;
+        case HealthType.HOSPITAL:
+          break;
+        case HealthType.OCCUPATIONAL_HEALTH_CARE:
+          break;
+        default:
+          break;
+      }
+      // baseEntry?.diagnosisCodes?.filter(
+      //   (code) => Boolean(code) === true
+      // ),
+
+      // handleAddNewEntry(formatedBaseEntry);
+      setBaseEntry(initialFormValues);
+    }
+  };
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
+  const handleChange = (
+    event: SelectChangeEvent<typeof baseEntry.diagnosisCodes>
+  ) => {
+    const {
+      target: { value },
+    } = event;
+    setBaseEntry(
+      // On autofill we get a stringified value.
+      {
+        ...baseEntry,
+        diagnosisCodes: typeof value === "string" ? value.split(",") : value,
+      }
+    );
+  };
+
+  const renderHealthbaseEntry = () => {
+    switch (type) {
+      case HealthType.HEALTH_CHECK:
+        return (
+          <FormControl fullWidth>
+            <InputLabel id="health-check-rating">Healthcheck rating</InputLabel>
+            <Select
+              labelId="health-check-rating"
+              id="health-check-rating-selection"
+              value={baseEntry.healthCheckRating}
+              label="Healthcheck rating"
+              onChange={({ target }) =>
+                setBaseEntry({
+                  ...baseEntry,
+                  healthCheckRating: Number(target.value),
+                })
+              }
+            >
+              <MenuItem value={0}>{0}</MenuItem>
+              <MenuItem value={1}>{1}</MenuItem>
+              <MenuItem value={2}>{2}</MenuItem>
+              <MenuItem value={3}>{3}</MenuItem>
+            </Select>
+          </FormControl>
+        );
+      case HealthType.HOSPITAL:
+        return <div>Hospital Type</div>;
+      case HealthType.OCCUPATIONAL_HEALTH_CARE:
+        return <div>Occupational Health Care Inputs</div>;
+      default:
+        break;
     }
   };
 
@@ -52,51 +144,74 @@ const NewEntryForm = ({
         <TextField
           label="Description"
           fullWidth
-          value={entries.description}
+          value={baseEntry.description}
           onChange={({ target }) =>
-            setEntries({ ...entries, description: target.value })
+            setBaseEntry({ ...baseEntry, description: target.value })
           }
         />
         <TextField
-          label="Date"
+          type="date"
           placeholder="YYYY-MM-DD"
           fullWidth
-          value={entries.date}
+          value={baseEntry.date}
           onChange={({ target }) =>
-            setEntries({ ...entries, date: target.value })
+            setBaseEntry({ ...baseEntry, date: target.value })
           }
         />
         <TextField
           label="Specialist"
           placeholder="specialist name"
           fullWidth
-          value={entries.specialist}
+          value={baseEntry.specialist}
           onChange={({ target }) =>
-            setEntries({ ...entries, specialist: target.value })
+            setBaseEntry({ ...baseEntry, specialist: target.value })
           }
         />
-        <TextField
-          label="Healthcheck rating"
-          fullWidth
-          value={entries.healthCheckRating}
-          onChange={({ target }) =>
-            setEntries({
-              ...entries,
-              healthCheckRating:
-                !isNaN(Number(target.value)) || target.value === ""
-                  ? target.value
-                  : entries.healthCheckRating,
-            })
-          }
-        />
-        <TextField
-          label="Diagnosis codes"
-          fullWidth
-          value={entries.diagnosisCodes}
-          onChange={({ target }) =>
-            setEntries({ ...entries, diagnosisCodes: target.value })
-          }
-        />
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="type-id">Type</InputLabel>
+            <Select
+              labelId="type-id"
+              id="type-selector"
+              value={type}
+              label="Age"
+              onChange={(event) => setType(event.target.value as HealthType)}
+            >
+              <MenuItem value={HealthType.HEALTH_CHECK}>
+                {HealthType.HEALTH_CHECK}
+              </MenuItem>
+              <MenuItem value={HealthType.HOSPITAL}>
+                {HealthType.HOSPITAL}
+              </MenuItem>
+              <MenuItem value={HealthType.OCCUPATIONAL_HEALTH_CARE}>
+                {HealthType.OCCUPATIONAL_HEALTH_CARE}
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        {renderHealthbaseEntry()}
+        <FormControl fullWidth sx={{ marginTop: "10px" }}>
+          <InputLabel id="demo-multiple-checkbox-label">
+            Diagnoses Codes
+          </InputLabel>
+          <Select
+            labelId="demo-multiple-checkbox-label"
+            id="demo-multiple-checkbox"
+            multiple
+            value={baseEntry.diagnosisCodes}
+            onChange={handleChange}
+            input={<OutlinedInput label="Diagnoses Code" />}
+            renderValue={(selected) => selected[1] && selected.join(", ")}
+            MenuProps={MenuProps}
+          >
+            {diagnosesCodeList.map((code) => (
+              <MenuItem key={code} value={code}>
+                <Checkbox checked={baseEntry.diagnosisCodes.includes(code)} />
+                <ListItemText primary={code} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <Grid>
           <Grid item>
             <Button
